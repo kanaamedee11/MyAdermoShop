@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.myadermoshop"
+    android:versionCode="2"
+    android:versionName="1.1">
+
+    <!-- Network -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <!-- Bluetooth (legacy, capped at API 30) -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <!-- Bluetooth (API 31+) -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <!-- Location (required for Bluetooth scanning on older APIs) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Storage (legacy) -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- Storage (API 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- Camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- USB host (for thermal printer) -->
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="true" />
+
+    <!-- Camera features -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+
+    <!-- Custom permission for dynamic receivers -->
+    <permission
+        android:name="com.example.myadermoshop.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.myadermoshop.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_adermologo_round"
+        android:roundIcon="@mipmap/ic_adermologo_round"
+        android:theme="@style/Theme.MyAdermoShop"
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:extractNativeLibs="false"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        tools:targetApi="31">
+
+        <!-- Launcher -->
+        <activity
+            android:name="com.example.myadermoshop.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.example.myadermoshop.LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.AddPurchaseActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.AddVersementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.StockDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.ClosureCheckActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.AddSaleActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.AddDispenseActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.BarcodeScanActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.example.myadermoshop.CaptureAct"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.example.myadermoshop.ProductSelectionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.AddPhysicalControlActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.myadermoshop.BarcodeScannerDeterioretedInstanceActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/zxingTheme" />
+
+        <!-- ZXing -->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:exported="false"
+            android:clearTaskOnLaunch="true"
+            android:screenOrientation="sensorLandscape"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <!-- FileProvider -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.myadermoshop.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- AndroidX Startup: classes come from Gradle deps, not project sources.
+             tools:node="merge" lets the build merge this with the library's own entry. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="com.example.myadermoshop.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+                android:value="androidx.startup" />
+        </provider>
+
+        <!-- Baseline Profiles: tools:ignore suppresses the IDE unresolved-class warning -->
+        <receiver
+            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+            android:permission="android.permission.DUMP"
+            android:directBootAware="false"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="UnresolvableClass">
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- STOCK DETAILS — product hero + grouped info/finance sections + CTA -->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ios_bg">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ios_nav"
+        app:elevation="0dp">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/ios_nav"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/ios_blue"
+            app:title="Détails"
+            app:titleTextAppearance="@style/T.NavTitle"/>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/ios_sep"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Product image — full-width, no card border (iOS detail style) -->
+            <ImageView
+                android:id="@+id/imageViewProduct"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_placeholder_image_foreground"
+                android:contentDescription="Product"/>
+
+            <!-- Title + decision badge -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/textViewProductTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Titre du Produit"
+                        android:textColor="@color/ios_label"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.007"/>
+                    <TextView
+                        android:id="@+id/textViewSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Fournisseur · Quantité"
+                        android:textColor="@color/ios_label2"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+                <!-- Decision badge -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:cardBackgroundColor="@color/ios_green_bg"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+                    <TextView
+                        android:id="@+id/tvDecision"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:text="CONFIRMÉ"
+                        android:textColor="@color/ios_green"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- ── Section: Informations ── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:text="INFORMATIONS"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Montant total -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Montant Total"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/textViewTotalAmount" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="600 BIF"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <!-- Pièces -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Pièces"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/textViewPieces" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="20"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <!-- Fabrication -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Fabrication"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/textViewManufactureDate" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="2024/01/29"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <!-- Expiration -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Expiration"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/textViewExpirationDate" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="2025/12/24"
+                            android:textColor="@color/ios_green" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <!-- Fournisseur -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Fournisseur"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/textViewSupplierName" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="Barundi"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text=" ›" android:textColor="@color/ios_label3" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <!-- Contact -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Contact"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/textViewContact" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="+257 79 000 000"
+                            android:textColor="@color/ios_blue" android:textSize="17sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Section: Finances ── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="ANALYSE FINANCIÈRE"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Montant Utilisé"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/tvTotalAmountUsed" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="600 BIF"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Prix de Vente Prévu"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/tvExpectedSellingAmount" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="900 BIF"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Bénéfice"
+                            android:textColor="@color/ios_label" android:textSize="17sp" android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvBenefice" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="+300 BIF"
+                            android:textColor="@color/ios_green" android:textSize="17sp" android:textStyle="bold"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Statut Téléchargement"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            app:cardBackgroundColor="@color/ios_red_bg" app:cardCornerRadius="6dp" app:cardElevation="0dp" app:strokeWidth="0dp">
+                            <TextView android:id="@+id/tvUploadStatus"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:paddingStart="8dp" android:paddingEnd="8dp"
+                                android:paddingTop="3dp" android:paddingBottom="3dp"
+                                android:text="Non téléchargé" android:textColor="@color/ios_red"
+                                android:textSize="13sp" android:textStyle="bold"/>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CTA -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonCreateInstances"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="28dp"
+                android:text="Créer les Barcodes"
+                android:textColor="@color/ios_btn_text"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:letterSpacing="-0.004"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/ios_btn"
+                app:cornerRadius="12dp"
+                app:elevation="0dp"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/ios_blue"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

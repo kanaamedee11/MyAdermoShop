@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LOGIN — iOS grouped inset card, Large Title, blue CTA -->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ios_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="40dp">
+
+        <Space android:layout_width="0dp" android:layout_height="72dp"/>
+
+        <!-- App icon -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            app:cardBackgroundColor="@color/ios_btn"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="16dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_adermologo_round"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <Space android:layout_width="0dp" android:layout_height="24dp"/>
+
+        <!-- Large Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connexion"
+            android:textColor="@color/ios_label"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.012"/>
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6px"
+            android:text="Accédez à votre espace POS"
+            android:textColor="@color/ios_label2"
+            android:textSize="17sp"/>
+
+        <Space android:layout_width="0dp" android:layout_height="40dp"/>
+
+        <!-- ── Grouped inset input card ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@color/ios_bg2"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Email row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/ic_email"
+                        app:tint="@color/ios_blue"/>
+                    <EditText
+                        android:id="@+id/editTextEmail"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:hint="Email"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:singleLine="true"
+                        android:textColor="@color/ios_label"
+                        android:textColorHint="@color/ios_placeholder"
+                        android:textSize="17sp"/>
+                </LinearLayout>
+
+                <!-- iOS hairline separator -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/ios_sep"/>
+
+                <!-- Password row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/ic_lock"
+                        app:tint="@color/ios_blue"/>
+                    <EditText
+                        android:id="@+id/editTextPassword"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:hint="Mot de passe"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:textColor="@color/ios_label"
+                        android:textColorHint="@color/ios_placeholder"
+                        android:textSize="17sp"/>
+                    <ImageButton
+                        android:id="@+id/btnTogglePassword"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@null"
+                        android:src="@drawable/ic_eye_off"
+                        app:tint="@color/ios_label2"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Forgot password link -->
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:padding="4dp"
+            android:text="Mot de passe oublié ?"
+            android:textColor="@color/ios_blue"
+            android:textSize="15sp"/>
+
+        <Space android:layout_width="0dp" android:layout_height="24dp"/>
+
+        <!-- Primary CTA -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Se connecter"
+            android:textColor="@color/ios_btn_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:letterSpacing="-0.004"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@color/ios_btn"
+            app:cornerRadius="12dp"
+            app:elevation="0dp"/>
+
+        <Space android:layout_width="0dp" android:layout_height="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adermo POS · v2.0"
+            android:textColor="@color/ios_label3"
+            android:textSize="13sp"/>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

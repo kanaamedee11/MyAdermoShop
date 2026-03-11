@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ═══ APP THEME ═══ -->
+    <style name="Theme.POS.iOS.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@color/ios_bg</item>
+        <item name="colorPrimary">@color/ios_blue</item>
+        <item name="colorAccent">@color/ios_blue</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/ios_tabbar</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Theme.POS.iOS.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@color/ios_bg</item>
+        <item name="colorPrimary">@color/ios_blue</item>
+        <item name="colorAccent">@color/ios_blue</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/ios_tabbar</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- ═══ TYPOGRAPHY ═══ -->
+    <style name="T" />
+    <style name="T.LargeTitle">
+        <item name="android:textSize">34sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ios_label</item>
+        <item name="android:letterSpacing">0.012</item>
+    </style>
+    <style name="T.Title1">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ios_label</item>
+    </style>
+    <style name="T.Title2">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ios_label</item>
+    </style>
+    <style name="T.NavTitle">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ios_label</item>
+        <item name="android:letterSpacing">-0.004</item>
+    </style>
+    <style name="T.Headline">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ios_label</item>
+        <item name="android:letterSpacing">-0.004</item>
+    </style>
+    <style name="T.Body">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/ios_label</item>
+        <item name="android:letterSpacing">-0.004</item>
+    </style>
+    <style name="T.Subhead">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/ios_label2</item>
+    </style>
+    <style name="T.Footnote">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/ios_label2</item>
+    </style>
+    <style name="T.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/ios_label3</item>
+    </style>
+    <style name="T.SectionHeader">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/ios_label2</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+
+    <!-- ═══ TOOLBAR ═══ -->
+    <style name="Widget.iOS.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@color/ios_nav</item>
+        <item name="android:elevation">0dp</item>
+        <item name="titleTextAppearance">@style/T.NavTitle</item>
+        <item name="navigationIconTint">@color/ios_blue</item>
+    </style>
+
+    <!-- ═══ BUTTONS ═══ -->
+    <!-- Primary: blue fill, 12dp radius -->
+    <style name="B.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="backgroundTint">@color/ios_btn</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textColor">@color/ios_btn_text</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.004</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+    <!-- Secondary: tinted bg, blue text -->
+    <style name="B.Secondary" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="backgroundTint">@color/ios_btn2_bg</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textColor">@color/ios_btn2_text</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+    <!-- Destructive: red -->
+    <style name="B.Destructive" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="backgroundTint">@color/ios_red_bg</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textColor">@color/ios_red</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+    <!-- Compact -->
+    <style name="B.Compact" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_height">36dp</item>
+        <item name="backgroundTint">@color/ios_btn</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="android:textColor">@color/ios_btn_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- ═══ CARDS (iOS grouped inset) ═══ -->
+    <style name="Card" />
+    <style name="Card.iOS">
+        <item name="cardBackgroundColor">@color/ios_bg2</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+    </style>
+
+    <!-- ═══ TEXT INPUT ═══ -->
+    <style name="Input.iOS" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/ios_bg2</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="hintTextColor">@color/ios_label2</item>
+        <item name="android:textColorHint">@color/ios_placeholder</item>
+    </style>
+
+    <!-- ═══ ZXING ═══ -->
+    <style name="zxingTheme" parent="zxing_CaptureTheme">
+    </style>
+
+</resources>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    FRAGMENT CLOSING — iOS Style
+    IDs: etStartDate, etEndDate, btnSearch, btnShowAll, recyclerViewClosing
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ios_bg">
+
+    <!-- Filter toolbar card -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/ios_bg2"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="8dp"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etStartDate"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:focusable="false"
+                android:clickable="true"
+                android:hint="Debut"
+                android:textSize="15sp"
+                android:textColor="@color/ios_label"
+                android:textColorHint="@color/ios_placeholder"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"/>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="20dp"
+                android:background="@color/ios_sep"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"/>
+
+            <EditText
+                android:id="@+id/etEndDate"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:focusable="false"
+                android:clickable="true"
+                android:hint="Fin"
+                android:textSize="15sp"
+                android:textColor="@color/ios_label"
+                android:textColorHint="@color/ios_placeholder"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"/>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="20dp"
+                android:background="@color/ios_sep"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"/>
+
+            <ImageButton
+                android:id="@+id/btnSearch"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@null"
+                android:src="@drawable/ic_search"
+                android:contentDescription="Rechercher"
+                app:tint="@color/ios_blue"/>
+
+            <ImageButton
+                android:id="@+id/btnShowAll"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@null"
+                android:src="@drawable/ic_list_all"
+                android:contentDescription="Tout afficher"
+                app:tint="@color/ios_blue"/>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewClosing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="4dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

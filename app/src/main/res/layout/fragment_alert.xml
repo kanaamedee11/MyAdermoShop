@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Alert banner — iOS notification style -->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/alertCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/ios_orange_bg"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:gravity="center_vertical" android:orientation="horizontal" android:padding="12dp">
+        <ImageView android:id="@+id/alertIcon" android:layout_width="20dp" android:layout_height="20dp"
+            android:layout_marginEnd="10dp" android:src="@drawable/ic_warning" app:tint="@color/ios_orange"/>
+        <TextView android:id="@+id/alertMessage" android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content" android:text="Message d'alerte"
+            android:textColor="@color/ios_orange" android:textSize="15sp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

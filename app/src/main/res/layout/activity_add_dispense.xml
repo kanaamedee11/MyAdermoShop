@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ios_bg">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ios_nav"
+        app:elevation="0dp">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/ios_nav"
+            app:navigationIcon="@drawable/ic_close"
+            app:navigationIconTint="@color/ios_blue"
+            app:title="Nouvelle Dépense"
+            app:titleTextAppearance="@style/T.NavTitle"/>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/ios_sep"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="100dp"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="32dp" android:layout_marginTop="24dp" android:layout_marginBottom="8dp"
+                android:text="DÉTAILS" android:textColor="@color/ios_label2" android:textSize="13sp"
+                android:textAllCaps="true" android:letterSpacing="0.04"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginStart="16dp" android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2" app:cardCornerRadius="10dp"
+                app:cardElevation="0dp" app:strokeWidth="0dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Montant"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText android:id="@+id/editTextAmount" android:layout_width="120dp"
+                            android:layout_height="match_parent" android:background="@null"
+                            android:gravity="end" android:hint="0 BIF"
+                            android:inputType="numberDecimal" android:textColor="@color/ios_label"
+                            android:textColorHint="@color/ios_placeholder" android:textSize="17sp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Type"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <Spinner android:id="@+id/spinnerTypeDispense" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:background="@null"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Mode de paiement"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <Spinner android:id="@+id/spinnerPaymentType" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:background="@null"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <Button android:id="@+id/btnSelectImage" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="Sélectionner Image"/>
+                        <ImageView android:id="@+id/ivSelectedImage" android:layout_width="50dp"
+                            android:layout_height="50dp" android:layout_marginStart="8dp"
+                            android:scaleType="centerCrop"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <Space android:layout_width="0dp" android:layout_height="24dp"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonSave"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        android:text="Enregistrer"
+        android:textColor="@color/ios_btn_text"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/ios_btn"
+        app:cornerRadius="12dp"
+        app:elevation="0dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

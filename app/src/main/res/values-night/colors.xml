@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values-night/colors.xml  ·  iOS Dark palette -->
+<resources>
+    <color name="ios_bg">#000000</color>
+    <color name="ios_bg2">#1C1C1E</color>
+    <color name="ios_bg3">#2C2C2E</color>
+    <color name="ios_label">#FFFFFF</color>
+    <color name="ios_label2">#8E8E93</color>
+    <color name="ios_label3">#48484A</color>
+    <color name="ios_placeholder">#3A3A3C</color>
+    <color name="ios_sep">#38383A</color>
+    <color name="ios_fill">#2C2C2E</color>
+    <color name="ios_blue">#0A84FF</color>
+    <color name="ios_blue_bg">#0A84FF1F</color>
+    <color name="ios_green">#30D158</color>
+    <color name="ios_green_bg">#30D1581F</color>
+    <color name="ios_red">#FF453A</color>
+    <color name="ios_red_bg">#FF453A1F</color>
+    <color name="ios_orange">#FF9F0A</color>
+    <color name="ios_orange_bg">#FF9F0A1F</color>
+    <color name="ios_nav">#1C1C1EF0</color>
+    <color name="ios_nav_border">#38383A</color>
+    <color name="ios_tabbar">#1C1C1EEE</color>
+    <color name="ios_btn">#0A84FF</color>
+    <color name="ios_btn_text">#FFFFFF</color>
+    <color name="ios_btn2_bg">#0A84FF1F</color>
+    <color name="ios_btn2_text">#0A84FF</color>
+    <color name="ios_btn_disabled">#2C2C2E</color>
+    <color name="ios_btn_disabled_text">#48484A</color>
+    <color name="ios_white">#FFFFFF</color>
+    <color name="ios_black">#000000</color>
+</resources>

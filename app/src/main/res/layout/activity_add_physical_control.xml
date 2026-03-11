@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ios_bg">
+
+    <!-- ── Toolbar ── -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ios_nav"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/ios_nav"
+            app:navigationIcon="@drawable/ic_close"
+            app:navigationIconTint="@color/ios_blue"
+            app:title="Contrôle Physique"
+            app:titleTextAppearance="@style/T.NavTitle"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ── Main content (fills remaining height under AppBar) ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Page indicator + dot strip -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvPageCounter"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Produit 1 / 1"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"/>
+
+            <LinearLayout
+                android:id="@+id/dotIndicatorContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+        <!-- ViewPager — one page per product -->
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPagerProducts"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <!-- ── Bottom actions ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:background="@color/ios_bg">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/ios_sep"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Previous / Next -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonPrevious"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="‹ Précédent"
+                    android:textSize="15sp"
+                    android:textColor="@color/ios_blue"
+                    android:stateListAnimator="@null"
+                    app:strokeColor="@color/ios_blue"
+                    app:strokeWidth="1dp"
+                    app:cornerRadius="10dp"
+                    app:elevation="0dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonNext"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="8dp"
+                    android:text="Suivant ›"
+                    android:textSize="15sp"
+                    android:textColor="@color/ios_blue"
+                    android:stateListAnimator="@null"
+                    app:strokeColor="@color/ios_blue"
+                    app:strokeWidth="1dp"
+                    app:cornerRadius="10dp"
+                    app:elevation="0dp"/>
+
+            </LinearLayout>
+
+            <!-- Scan admin code -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonScanAdminCode"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="10dp"
+                android:text="Scanner le code de l'admin"
+                android:textColor="@color/ios_blue"
+                android:textSize="15sp"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/ios_blue_bg"
+                app:cornerRadius="10dp"
+                app:elevation="0dp"
+                app:icon="@drawable/ic_scan"
+                app:iconTint="@color/ios_blue"
+                app:iconGravity="textStart"/>
+
+            <!-- Send data — primary CTA -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSendData"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Envoyer les données"
+                android:textColor="@color/ios_btn_text"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/ios_btn"
+                app:cornerRadius="12dp"
+                app:elevation="0dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Fragment container preserved for back-compat -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

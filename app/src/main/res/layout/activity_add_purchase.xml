@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ACTIVITY ADD PURCHASE — iOS HIG Style
+    Pattern matches the 58-file iOS redesign:
+      • CoordinatorLayout + AppBarLayout + MaterialToolbar (0dp elevation, ios_nav bg)
+      • NestedScrollView with appbar_scrolling_view_behavior
+      • Section headers: 13sp, ios_label2, ALLCAPS, letterSpacing 0.04
+      • InsetGrouped cards: ios_bg2, 10dp radius, 0dp elevation
+      • Input rows 52dp tall, label left weight=1, EditText right, @null bg
+      • Bottom sticky CTA button (B.Primary pattern)
+
+    Logic mirrors AddPurchaseActivity.java:
+      View IDs: spinnerProduct, editTextPieces, editTextTotalAmount,
+                editTextPricePerUnit, editTextMfDate, editTextExpDate,
+                editTextSupplierName, editTextSupplierContact,
+                editTextFactureNumber, textViewSelectedImage,
+                buttonSelectImage, buttonAddPurchase
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ios_bg">
+
+    <!-- ── Navigation bar ── -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ios_nav"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/ios_nav"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/ios_blue"
+            app:title="Nouvel Achat"
+            app:titleTextAppearance="@style/T.NavTitle"
+            app:elevation="0dp"/>
+
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:background="@color/ios_sep"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ── Scrollable form ── -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="100dp"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- SECTION: Produit                         -->
+            <!-- ══════════════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="PRODUIT"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Produit spinner row -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="8dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Produit"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <Spinner
+                            android:id="@+id/spinnerProduct"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:spinnerMode="dropdown"
+                            android:background="@null"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Nombre de pièces -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Pièces"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextPieces"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:gravity="end"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:textColor="@color/ios_label"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Montant Total -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Montant Total"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextTotalAmount"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:gravity="end"
+                            android:hint="0 BIF"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/ios_label"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Prix par Unité (read-only, auto-calculated) -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Prix par Unité"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextPricePerUnit"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:focusable="false"
+                            android:clickable="false"
+                            android:gravity="end"
+                            android:hint="—"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/ios_label2"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- SECTION: Dates                           -->
+            <!-- ══════════════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="DATES"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Fabrication -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Fabrication"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextMfDate"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:gravity="end"
+                            android:hint="AAAA-MM-JJ"
+                            android:textColor="@color/ios_blue"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Expiration -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Expiration"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextExpDate"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:gravity="end"
+                            android:hint="AAAA-MM-JJ"
+                            android:textColor="@color/ios_blue"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- SECTION: Fournisseur                     -->
+            <!-- ══════════════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="FOURNISSEUR"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Nom -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Nom"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextSupplierName"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:gravity="end"
+                            android:hint="Nom du fournisseur"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/ios_label"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Contact -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Contact"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextSupplierContact"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:gravity="end"
+                            android:hint="+257 …"
+                            android:inputType="phone"
+                            android:textColor="@color/ios_label"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ══════════════════════════════════════════ -->
+            <!-- SECTION: Facture & Paiement              -->
+            <!-- ══════════════════════════════════════════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="FACTURE ET PAIEMENT"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Numéro de Facture -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="N° Facture"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <EditText
+                            android:id="@+id/editTextFactureNumber"
+                            android:layout_width="140dp"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:gravity="end"
+                            android:hint="FAC-0001"
+                            android:inputType="text"
+                            android:textColor="@color/ios_label"
+                            android:textColorHint="@color/ios_placeholder"
+                            android:textSize="17sp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Image de la Facture -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                        <LinearLayout android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Image de la Facture"
+                                android:textColor="@color/ios_label" android:textSize="17sp"/>
+                            <TextView android:id="@+id/textViewSelectedImage"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Aucune image sélectionnée"
+                                android:textColor="@color/ios_label2" android:textSize="13sp"
+                                android:singleLine="true" android:ellipsize="middle"/>
+                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonSelectImage"
+                            style="@style/B.Compact"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="Choisir"
+                            android:textSize="14sp"
+                            app:cornerRadius="10dp"/>
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Type de Paiement -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:gravity="center_vertical" android:orientation="horizontal"
+                        android:paddingStart="16dp" android:paddingEnd="8dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Type de Paiement"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <Spinner
+                            android:id="@+id/spinnerPaymentType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:spinnerMode="dropdown"
+                            android:background="@null"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <Space android:layout_width="0dp" android:layout_height="24dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ── Bottom sticky CTA ── -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonAddPurchase"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        android:text="Ajouter un Achat"
+        android:textColor="@color/ios_btn_text"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:letterSpacing="-0.004"
+        android:stateListAnimator="@null"
+        app:backgroundTint="@color/ios_btn"
+        app:cornerRadius="12dp"
+        app:elevation="0dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
