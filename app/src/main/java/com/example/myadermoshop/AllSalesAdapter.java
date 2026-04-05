@@ -6,109 +6,101 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
-/**
- * AllSalesAdapter
- * Used in: all sales fragment — getAllCarts() / getCartsBetweenDates()
- *
- * Outer card : item_sale_simple.xml  (full Cart card — identical structure
- *              to item_sale_card, just used in the all-sales context)
- *   Binds: textViewCartID, textViewCartDate,
- *          linearLayoutProducts, textViewTotalAmount
- *
- * Inner rows : item_sale_row.xml  (one per CartItem, plain row with separator)
- *   Binds: tvProductName, tvQty, tvUnitPrice, tvTotal
- */
-public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.ViewHolder> {
-
-    private final Context context;
+public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.SalesViewHolder> {
     private final List<Cart> cartList;
+    private final Context context;
+
+    public static class SalesViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout linearLayoutProducts;
+        TextView textViewCartDate, textViewCartID, textViewTotalAmount;
+
+        public SalesViewHolder(View itemView) {
+            super(itemView);
+            textViewCartID = itemView.findViewById(R.id.textViewCartID);
+            textViewCartDate = itemView.findViewById(R.id.textViewCartDate);
+            textViewTotalAmount = itemView.findViewById(R.id.textViewTotalAmount);
+            linearLayoutProducts = itemView.findViewById(R.id.linearLayoutProducts);
+        }
+    }
 
     public AllSalesAdapter(Context context, List<Cart> cartList) {
-        this.context  = context;
+        this.context = context;
         this.cartList = cartList;
     }
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
-
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context)
-                .inflate(R.layout.item_sale_simple, parent, false);
-        return new ViewHolder(view);
+    public SalesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_sale_simple, parent, false);
+        return new SalesViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SalesViewHolder holder, int position) {
         Cart cart = cartList.get(position);
 
-        // Header
+        // Bind header info
         holder.textViewCartID.setText(cart.getCartID());
         holder.textViewCartDate.setText(cart.getTimestamp());
+        holder.textViewTotalAmount.setText(String.format(Locale.getDefault(), "%.2f BIF", cart.getTotalAmount()));
 
-        // Clear stale rows from recycled ViewHolder
+        // Clear previous rows
         holder.linearLayoutProducts.removeAllViews();
 
-        // Inflate one item_sale_row per CartItem
-        List<CartItem> items = cart.getCartItems();
-        if (items != null && !items.isEmpty()) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            for (CartItem item : items) {
-                View row = inflater.inflate(
-                        R.layout.item_sale_row,
-                        holder.linearLayoutProducts,
-                        false);
-                ((TextView) row.findViewById(R.id.tvProductName))
-                        .setText(item.getProductName());
-                ((TextView) row.findViewById(R.id.tvQty))
-                        .setText(formatQty(item.getQuantity()));
-                ((TextView) row.findViewById(R.id.tvUnitPrice))
-                        .setText(formatAmount(item.getUnitPrice()));
-                ((TextView) row.findViewById(R.id.tvTotal))
-                        .setText(formatAmount(item.getQuantity() * item.getUnitPrice()));
-                holder.linearLayoutProducts.addView(row);
+        // Group products by name
+        HashMap<String, CartItem> groupedItems = new HashMap<>();
+        for (CartItem item : cart.getCartItems()) {
+            if (groupedItems.containsKey(item.getProductName())) {
+                CartItem existing = groupedItems.get(item.getProductName());
+                existing.setQuantity(existing.getQuantity() + item.getQuantity());
+            } else {
+                groupedItems.put(item.getProductName(), item);
             }
         }
 
-        // Footer
-        holder.textViewTotalAmount.setText(
-                formatAmount(cart.getTotalAmount()) + " " + cart.getCurrency());
+        // Add product rows programmatically
+        Iterator<CartItem> iterator = groupedItems.values().iterator();
+        while (iterator.hasNext()) {
+            CartItem item = iterator.next();
+
+            LinearLayout row = new LinearLayout(context);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setPadding(16, 8, 16, 8);
+
+            TextView tvName = createTextView(item.getProductName(), 2f);
+            TextView tvQty = createTextView(String.valueOf(item.getQuantity()), 1f);
+            TextView tvUnit = createTextView(String.format(Locale.getDefault(), "%.2f", item.getUnitPrice()), 1f);
+            TextView tvTotal = createTextView(String.format(Locale.getDefault(), "%.2f", item.getQuantity() * item.getUnitPrice()), 1f);
+
+            row.addView(tvName);
+            row.addView(tvQty);
+            row.addView(tvUnit);
+            row.addView(tvTotal);
+
+            holder.linearLayoutProducts.addView(row);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return cartList != null ? cartList.size() : 0;
+        return cartList.size();
     }
 
-    // ── ViewHolder ────────────────────────────────────────────────────────────
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView     textViewCartID;
-        final TextView     textViewCartDate;
-        final LinearLayout linearLayoutProducts;
-        final TextView     textViewTotalAmount;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textViewCartID       = itemView.findViewById(R.id.textViewCartID);
-            textViewCartDate     = itemView.findViewById(R.id.textViewCartDate);
-            linearLayoutProducts = itemView.findViewById(R.id.linearLayoutProducts);
-            textViewTotalAmount  = itemView.findViewById(R.id.textViewTotalAmount);
-        }
-    }
-
-    // ── Formatters ────────────────────────────────────────────────────────────
-
-    private static String formatQty(double qty) {
-        if (qty == Math.floor(qty)) return String.valueOf((int) qty);
-        return String.format("%.1f", qty);
-    }
-
-    private static String formatAmount(double amount) {
-        return String.format("%.2f", amount);
+    private TextView createTextView(String text, float weight) {
+        TextView tv = new TextView(context);
+        tv.setText(text);
+        tv.setTextSize(14);
+        tv.setTextColor(context.getResources().getColor(R.color.ios_label));
+        tv.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
+        return tv;
     }
 }

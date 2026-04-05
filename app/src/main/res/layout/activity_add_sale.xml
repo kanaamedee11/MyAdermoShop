@@ -6,130 +6,366 @@
     android:layout_height="match_parent"
     android:background="@color/ios_bg">
 
+    <!-- ── Top App Bar ── -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ios_nav"
+        android:background="@color/ios_bg2"
+        android:elevation="0dp"
         app:elevation="0dp">
-        <com.google.android.material.appbar.MaterialToolbar
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/ios_nav"
-            app:navigationIcon="@drawable/ic_close"
-            app:navigationIconTint="@color/ios_blue"
+            android:layout_height="56dp"
+            android:background="@color/ios_bg2"
             app:title="Nouvelle Vente"
-            app:titleTextAppearance="@style/T.NavTitle"/>
-        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/ios_sep"/>
+            app:titleTextColor="@color/ios_label" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- ── Scrollable Content ── -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="100dp"
         android:clipToPadding="false"
+        android:paddingBottom="32dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="20dp">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_marginStart="32dp" android:layout_marginTop="24dp" android:layout_marginBottom="8dp"
-                android:text="DÉTAILS" android:textColor="@color/ios_label2" android:textSize="13sp"
-                android:textAllCaps="true" android:letterSpacing="0.04"/>
+            <!-- ══════════════════════════════════════
+                 SECTION 1 — Cart Items
+            ══════════════════════════════════════ -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="6dp"
+                android:text="ARTICLES DU PANIER"
+                android:textAllCaps="true"
+                android:textColor="@color/ios_label2"
+                android:textSize="12sp"
+                android:letterSpacing="0.06" />
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginStart="16dp" android:layout_marginEnd="16dp"
-                app:cardBackgroundColor="@color/ios_bg2" app:cardCornerRadius="10dp"
-                app:cardElevation="0dp" app:strokeWidth="0dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="28dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
-                        <TextView android:layout_width="0dp" android:layout_weight="1"
-                            android:layout_height="wrap_content" android:text="Montant"
-                            android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <EditText android:id="@+id/editTextAmount" android:layout_width="120dp"
-                            android:layout_height="match_parent" android:background="@null"
-                            android:gravity="end" android:hint="0 BIF"
-                            android:inputType="numberDecimal" android:textColor="@color/ios_label"
-                            android:textColorHint="@color/ios_placeholder" android:textSize="17sp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Total Price Row (top of card) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Prix Total"
+                            android:textColor="@color/ios_label"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="@color/ios_blue_bg"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="0dp">
+
+                            <TextView
+                                android:id="@+id/textViewTotalPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="5dp"
+                                android:text="0.00 BIF"
+                                android:textColor="@color/ios_blue"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/ios_sep" />
 
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
-                        <TextView android:layout_width="0dp" android:layout_weight="1"
-                            android:layout_height="wrap_content" android:text="Type"
-                            android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/tvSelectedType" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="Sélectionner"
-                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text=" ›" android:textColor="@color/ios_label3" android:textSize="17sp"/>
+                    <!-- Column Headers -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:background="@color/ios_bg"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:letterSpacing="0.04"
+                            android:text="PRODUIT"
+                            android:textAllCaps="true"
+                            android:textColor="@color/ios_label2"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:letterSpacing="0.04"
+                            android:text="QTÉ"
+                            android:textAllCaps="true"
+                            android:textColor="@color/ios_label2"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:letterSpacing="0.04"
+                            android:text="P.U"
+                            android:textAllCaps="true"
+                            android:textColor="@color/ios_label2"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:letterSpacing="0.04"
+                            android:text="TOTAL"
+                            android:textAllCaps="true"
+                            android:textColor="@color/ios_label2"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/ios_sep" />
 
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
-                        <TextView android:layout_width="0dp" android:layout_weight="1"
-                            android:layout_height="wrap_content" android:text="Date"
-                            android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <EditText android:id="@+id/editTextDate" android:layout_width="120dp"
-                            android:layout_height="match_parent" android:background="@null"
-                            android:clickable="true" android:focusable="false" android:gravity="end"
-                            android:hint="AAAA/MM/JJ" android:textColor="@color/ios_label"
-                            android:textColorHint="@color/ios_placeholder" android:textSize="17sp"/>
-                    </LinearLayout>
-
-                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
-
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="72dp"
-                        android:gravity="top" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingTop="12dp">
-                        <TextView android:layout_width="0dp" android:layout_weight="1"
-                            android:layout_height="wrap_content" android:text="Remarques"
-                            android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <EditText android:id="@+id/editTextNote" android:layout_width="0dp"
-                            android:layout_weight="1" android:layout_height="match_parent"
-                            android:background="@null" android:gravity="top|end"
-                            android:hint="Facultatif" android:inputType="textMultiLine"
-                            android:textColor="@color/ios_label" android:textColorHint="@color/ios_placeholder"
-                            android:textSize="17sp"/>
-                    </LinearLayout>
+                    <!-- RecyclerView for cart items -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewCart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="60dp"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp" />
 
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
-            <Space android:layout_width="0dp" android:layout_height="24dp"/>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+            <!-- ══════════════════════════════════════
+                 SECTION 2 — Scan Barcode
+            ══════════════════════════════════════ -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="6dp"
+                android:text="SCANNER UN CODE-BARRES"
+                android:textAllCaps="true"
+                android:textColor="@color/ios_label2"
+                android:textSize="12sp"
+                android:letterSpacing="0.06" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonSave"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="20dp"
-        android:text="Enregistrer"
-        android:textColor="@color/ios_btn_text"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:letterSpacing="-0.004"
-        android:stateListAnimator="@null"
-        app:backgroundTint="@color/ios_btn"
-        app:cornerRadius="12dp"
-        app:elevation="0dp"/>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="28dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:id="@+id/fabScanBarcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/ic_qr_code"
+                        app:tint="@color/ios_blue" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Scanner un code-barres"
+                        android:textColor="@color/ios_label"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/ios_label2" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ══════════════════════════════════════
+                 SECTION 3 — Select Product
+            ══════════════════════════════════════ -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="6dp"
+                android:text="SÉLECTIONNER UN PRODUIT"
+                android:textAllCaps="true"
+                android:textColor="@color/ios_label2"
+                android:textSize="12sp"
+                android:letterSpacing="0.06" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="28dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:id="@+id/fabSelectProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/ic_add"
+                        app:tint="@color/ios_blue" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Sélectionner un produit"
+                        android:textColor="@color/ios_label"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/ios_label2" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ══════════════════════════════════════
+                 SECTION 4 — Complete Sale
+            ══════════════════════════════════════ -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="6dp"
+                android:text="FINALISER"
+                android:textAllCaps="true"
+                android:textColor="@color/ios_label2"
+                android:textSize="12sp"
+                android:letterSpacing="0.06" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="28dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <Button
+                    android:id="@+id/buttonCompleteSale"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Finaliser la vente"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class CompletedPhysicalControlAdapter extends RecyclerView.Adapter<CompletedPhysicalControlAdapter.ViewHolder> {
@@ -22,42 +24,48 @@ public class CompletedPhysicalControlAdapter extends RecyclerView.Adapter<Comple
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(this.context).inflate(R.layout.completed_physical_control_card, viewGroup, false));
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.completed_physical_control_card, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        PhysicalControle physicalControle = this.physicalControlList.get(i);
-        viewHolder.tvDate.setText(physicalControle.getControleDateTime());
-        // For product count and discrepancies, you might want to calculate them from physicalControle.getControleCases()
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        PhysicalControle physicalControle = physicalControlList.get(position);
+
+        // Bind date
+        holder.tvDate.setText(physicalControle.getControleDateTime());
+
+        // Product count & discrepancies
         if (physicalControle.getControleCases() != null) {
-            viewHolder.tvProductCount.setText(String.valueOf(physicalControle.getControleCases().size()));
+            holder.tvProductCount.setText(String.valueOf(physicalControle.getControleCases().size()));
+
             int discrepancies = 0;
             for (ControleCase c : physicalControle.getControleCases()) {
                 if (c.getExpectedQuantity() != c.getActualQuantity()) {
                     discrepancies++;
                 }
             }
-            viewHolder.tvDiscrepancies.setText(String.valueOf(discrepancies));
+            holder.tvDiscrepancies.setText(String.valueOf(discrepancies));
+        } else {
+            holder.tvProductCount.setText("0");
+            holder.tvDiscrepancies.setText("0");
         }
     }
 
     @Override
     public int getItemCount() {
-        return this.physicalControlList.size();
+        return physicalControlList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate;
-        TextView tvProductCount;
-        TextView tvDiscrepancies;
+        TextView tvDate, tvProductCount, tvDiscrepancies;
 
-        public ViewHolder(View view) {
-            super(view);
-            this.tvDate = view.findViewById(R.id.tvDate);
-            this.tvProductCount = view.findViewById(R.id.tvProductCount);
-            this.tvDiscrepancies = view.findViewById(R.id.tvDiscrepancies);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            tvDate = itemView.findViewById(R.id.tvDate);
+            tvProductCount = itemView.findViewById(R.id.tvProductCount);
+            tvDiscrepancies = itemView.findViewById(R.id.tvDiscrepancies);
         }
     }
 }

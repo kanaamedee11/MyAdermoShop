@@ -11,41 +11,48 @@
         android:layout_height="wrap_content"
         android:background="@color/ios_nav"
         app:elevation="0dp">
+
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/ios_nav"
-            app:navigationIconTint="@color/ios_blue"
             app:title="Accueil"
-            app:titleTextAppearance="@style/T.NavTitle"/>
+            app:titleTextAppearance="@style/T.NavTitle" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/ios_sep"/>
+            android:background="@color/ios_sep" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSales"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingStart="0dp"
-        android:paddingEnd="0dp"
-        android:paddingBottom="88dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-    
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSales"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="88dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_sale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
+        android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
-        android:text="Vente"
-        android:textColor="@color/ios_btn_text"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/ios_btn"
+        android:contentDescription="Ajouter une vente"
+        app:backgroundTint="@color/ios_blue"
         app:elevation="4dp"
-        app:icon="@drawable/ic_sell"
-        app:iconTint="@color/ios_btn_text"/>
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/ios_bg2" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

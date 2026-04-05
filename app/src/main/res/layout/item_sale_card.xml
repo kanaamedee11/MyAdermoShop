@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    ITEM SALE CARD — iOS Style
-    Used in: today's sells fragment  (getTodayCarts())
-    One card per Cart. linearLayoutProducts is filled by the adapter
-    with item_sale_row.xml rows (one per CartItem).
-
-    IDs: textViewCartID, textViewCartDate,
-         linearLayoutProducts, textViewTotalAmount
--->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -22,133 +13,172 @@
     app:strokeWidth="0dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!-- ── Header: Cart ID + Date ── -->
+        <!-- ── Header: Cart ID + Delete ── -->
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:gravity="center_vertical">
+            android:paddingEnd="8dp">
 
             <TextView
                 android:id="@+id/textViewCartID"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Cart ID"
+                android:layout_weight="1"
+                android:ellipsize="middle"
+                android:singleLine="true"
                 android:textColor="@color/ios_label"
                 android:textSize="15sp"
-                android:textStyle="bold"
-                android:singleLine="true"
-                android:ellipsize="middle"/>
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/imageButtonCancel"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Supprimer"
+                android:src="@drawable/ic_close"
+                app:tint="@color/ios_red" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep" />
+
+        <!-- ── Timestamp Row ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <TextView
-                android:id="@+id/textViewCartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date"
+                android:text="Date et Heure"
                 android:textColor="@color/ios_label2"
-                android:textSize="13sp"/>
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textViewTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textColor="@color/ios_label"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
-        <View android:layout_width="match_parent" android:layout_height="0.5dp"
-            android:background="@color/ios_sep"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep" />
 
-        <!-- ── Column headers ── -->
+        <!-- ── Column Headers ── -->
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
+            android:background="@color/ios_bg"
             android:gravity="center_vertical"
-            android:background="@color/ios_bg">
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <TextView
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:text="Produit"
-                android:textColor="@color/ios_label2"
-                android:textSize="12sp"
-                android:textStyle="bold"
+                android:letterSpacing="0.04"
+                android:text="PRODUIT"
                 android:textAllCaps="true"
-                android:letterSpacing="0.04"/>
+                android:textColor="@color/ios_label2"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="end"
-                android:text="Quantité"
-                android:textColor="@color/ios_label2"
-                android:textSize="12sp"
-                android:textStyle="bold"
+                android:letterSpacing="0.04"
+                android:text="QTÉ"
                 android:textAllCaps="true"
-                android:letterSpacing="0.04"/>
+                android:textColor="@color/ios_label2"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="end"
+                android:letterSpacing="0.04"
                 android:text="P.U"
-                android:textColor="@color/ios_label2"
-                android:textSize="12sp"
-                android:textStyle="bold"
                 android:textAllCaps="true"
-                android:letterSpacing="0.04"/>
+                android:textColor="@color/ios_label2"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="end"
-                android:text="Prix Total"
-                android:textColor="@color/ios_label2"
-                android:textSize="12sp"
-                android:textStyle="bold"
+                android:letterSpacing="0.04"
+                android:text="TOTAL"
                 android:textAllCaps="true"
-                android:letterSpacing="0.04"/>
+                android:textColor="@color/ios_label2"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <View android:layout_width="match_parent" android:layout_height="0.5dp"
-            android:background="@color/ios_sep"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep" />
 
-        <!-- ── Product rows — adapter inflates item_sale_row here ── -->
+        <!-- ── Dynamic Product Rows (inflated by SaleCardAdapter) ── -->
         <LinearLayout
-            android:id="@+id/linearLayoutProducts"
+            android:id="@+id/linearLayoutItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep" />
 
-        <View android:layout_width="match_parent" android:layout_height="0.5dp"
-            android:background="@color/ios_sep"/>
-
-        <!-- ── Total footer ── -->
+        <!-- ── Footer: Total Amount ── -->
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:gravity="center_vertical">
+            android:paddingEnd="16dp">
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Montant Total"
                 android:textColor="@color/ios_label"
                 android:textSize="15sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
@@ -157,21 +187,40 @@
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp">
-                <TextView
-                    android:id="@+id/textViewTotalAmount"
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:text="0.00 BIF"
-                    android:textColor="@color/ios_blue"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    android:paddingBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/textViewAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/ios_blue"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewCurrency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textColor="@color/ios_blue"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

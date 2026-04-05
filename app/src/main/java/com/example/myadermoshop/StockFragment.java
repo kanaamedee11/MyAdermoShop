@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,54 +12,57 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes.dex */
 public class StockFragment extends Fragment {
     private DatabaseHelper databaseHelper;
     private ProductInStockAdapter productInStockAdapter;
     private RecyclerView recyclerViewStock;
     private SearchView searchViewStock;
-    private List<Product> allProducts = new ArrayList();
-    private final List<Product> filteredProducts = new ArrayList();
+    private List<Product> allProducts = new ArrayList<>();
+    private final List<Product> filteredProducts = new ArrayList<>();
 
-    @Override // androidx.fragment.app.Fragment
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
+    @Override
+    public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         View viewInflate = layoutInflater.inflate(R.layout.fragment_stock, viewGroup, false);
+        
         this.recyclerViewStock = viewInflate.findViewById(R.id.recyclerViewStock);
         this.searchViewStock = viewInflate.findViewById(R.id.searchViewStock);
         this.recyclerViewStock.setLayoutManager(new LinearLayoutManager(getContext()));
-        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
-        this.databaseHelper = databaseHelper;
+        
+        this.databaseHelper = new DatabaseHelper(getContext());
+        
         List<Product> distinctProductsFromStock = databaseHelper.getDistinctProductsFromStock();
         this.allProducts = distinctProductsFromStock;
+        this.filteredProducts.clear();
         this.filteredProducts.addAll(distinctProductsFromStock);
-        ProductInStockAdapter productInStockAdapter = new ProductInStockAdapter(this.filteredProducts, this.databaseHelper, getContext());
-        this.productInStockAdapter = productInStockAdapter;
-        this.recyclerViewStock.setAdapter(productInStockAdapter);
-        this.searchViewStock.setOnQueryTextListener(new SearchView.OnQueryTextListener() { // from class: com.example.myadermoshop.StockFragment.1
-            @Override // androidx.appcompat.widget.SearchView.OnQueryTextListener
-            public boolean onQueryTextSubmit(String str) {
+        
+        this.productInStockAdapter = new ProductInStockAdapter(this.filteredProducts, this.databaseHelper, getContext());
+        this.recyclerViewStock.setAdapter(this.productInStockAdapter);
+        
+        this.searchViewStock.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
                 return false;
             }
 
-            @Override // androidx.appcompat.widget.SearchView.OnQueryTextListener
-            public boolean onQueryTextChange(String str) {
-                StockFragment.this.filterProducts(str);
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterProducts(newText);
                 return true;
             }
         });
+        
         return viewInflate;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void filterProducts(String str) {
+    private void filterProducts(String query) {
         this.filteredProducts.clear();
-        if (str == null || str.trim().isEmpty()) {
+        if (query == null || query.trim().isEmpty()) {
             this.filteredProducts.addAll(this.allProducts);
         } else {
-            String lowerCase = str.toLowerCase();
+            String lowerCaseQuery = query.toLowerCase().trim();
             for (Product product : this.allProducts) {
                 String productName = this.databaseHelper.getProductName(product.getProductID());
-                if (productName != null && productName.toLowerCase().contains(lowerCase)) {
+                if (productName != null && productName.toLowerCase().contains(lowerCaseQuery)) {
                     this.filteredProducts.add(product);
                 }
             }

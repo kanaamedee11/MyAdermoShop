@@ -13,257 +13,230 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes.dex */
 public class ChangePasswordFragment extends Fragment {
+
     private static final String TAG = "ChangePasswordFragment";
-    private EditText existingPassword1;
-    private EditText existingPassword2;
-    private EditText existingPassword3;
-    private EditText existingPassword4;
-    private EditText existingPassword5;
-    private EditText existingPassword6;
-    private EditText existingPassword7;
-    private EditText existingPassword8;
-    private EditText newPassword1;
-    private EditText newPassword2;
-    private SharedPreferences sharedPreferences;
-    private TextView statusMessage;
-    private Button updateButton;
-    private Button validateExistingPasswordButton;
 
-    @Override // androidx.fragment.app.Fragment
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        return layoutInflater.inflate(R.layout.fragment_change_password, viewGroup, false);
+    // ── Existing password — 8 single-digit boxes ──────────────────────────────
+    private EditText existingPassword1, existingPassword2, existingPassword3,
+            existingPassword4, existingPassword5, existingPassword6,
+            existingPassword7, existingPassword8;
+
+    // ── New password — two full 8-char fields ─────────────────────────────────
+    private EditText newPassword1, newPassword2;
+
+    private TextView           statusMessage;
+    private Button             validateExistingPasswordButton;
+    private Button             updateButton;
+    private SharedPreferences  sharedPreferences;
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_change_password, container, false);
     }
 
-    @Override // androidx.fragment.app.Fragment
-    public void onViewCreated(View view, Bundle bundle) {
-        super.onViewCreated(view, bundle);
-        FragmentActivity activity = getActivity();
-        getActivity();
-        this.sharedPreferences = activity.getSharedPreferences("MyApp", 0);
-        this.existingPassword1 = view.findViewById(R.id.existing_password_1);
-        this.existingPassword2 = view.findViewById(R.id.existing_password_2);
-        this.existingPassword3 = view.findViewById(R.id.existing_password_3);
-        this.existingPassword4 = view.findViewById(R.id.existing_password_4);
-        this.existingPassword5 = view.findViewById(R.id.existing_password_5);
-        this.existingPassword6 = view.findViewById(R.id.existing_password_6);
-        this.existingPassword7 = view.findViewById(R.id.existing_password_7);
-        this.existingPassword8 = view.findViewById(R.id.existing_password_8);
-        this.newPassword1 = view.findViewById(R.id.new_password_1);
-        this.newPassword2 = view.findViewById(R.id.new_password_2);
-        this.validateExistingPasswordButton = view.findViewById(R.id.validate_existing_password_button);
-        this.updateButton = view.findViewById(R.id.update_button);
-        this.statusMessage = view.findViewById(R.id.status_message);
-        this.newPassword1.setEnabled(false);
-        this.newPassword2.setEnabled(false);
-        this.updateButton.setEnabled(false);
-        setUpEditText(this.existingPassword1, this.existingPassword2);
-        setUpEditText(this.existingPassword2, this.existingPassword3);
-        setUpEditText(this.existingPassword3, this.existingPassword4);
-        setUpEditText(this.existingPassword4, this.existingPassword5);
-        setUpEditText(this.existingPassword5, this.existingPassword6);
-        setUpEditText(this.existingPassword6, this.existingPassword7);
-        setUpEditText(this.existingPassword7, this.existingPassword8);
-        this.validateExistingPasswordButton.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ChangePasswordFragment$$ExternalSyntheticLambda2
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view2) throws JSONException {
-                this.f$0.m85x17692b94(view2);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        sharedPreferences = requireActivity().getSharedPreferences("MyApp", 0);
+
+        existingPassword1 = view.findViewById(R.id.existing_password_1);
+        existingPassword2 = view.findViewById(R.id.existing_password_2);
+        existingPassword3 = view.findViewById(R.id.existing_password_3);
+        existingPassword4 = view.findViewById(R.id.existing_password_4);
+        existingPassword5 = view.findViewById(R.id.existing_password_5);
+        existingPassword6 = view.findViewById(R.id.existing_password_6);
+        existingPassword7 = view.findViewById(R.id.existing_password_7);
+        existingPassword8 = view.findViewById(R.id.existing_password_8);
+        newPassword1                    = view.findViewById(R.id.new_password_1);
+        newPassword2                    = view.findViewById(R.id.new_password_2);
+        validateExistingPasswordButton  = view.findViewById(R.id.validate_existing_password_button);
+        updateButton                    = view.findViewById(R.id.update_button);
+        statusMessage                   = view.findViewById(R.id.status_message);
+
+        // New password fields and update button locked until existing password validated
+        newPassword1.setEnabled(false);
+        newPassword2.setEnabled(false);
+        updateButton.setEnabled(false);
+
+        // Auto-advance focus between single-digit boxes
+        setUpEditText(existingPassword1, existingPassword2);
+        setUpEditText(existingPassword2, existingPassword3);
+        setUpEditText(existingPassword3, existingPassword4);
+        setUpEditText(existingPassword4, existingPassword5);
+        setUpEditText(existingPassword5, existingPassword6);
+        setUpEditText(existingPassword6, existingPassword7);
+        setUpEditText(existingPassword7, existingPassword8);
+
+        validateExistingPasswordButton.setOnClickListener(v -> {
+            try { validatePassword(getExistingPassword()); }
+            catch (JSONException e) { e.printStackTrace(); }
+        });
+
+        updateButton.setOnClickListener(v -> {
+            String p1 = newPassword1.getText().toString();
+            String p2 = newPassword2.getText().toString();
+            if (isPasswordValid(p1) && p1.equals(p2)) {
+                try { changePassword(p1); }
+                catch (JSONException e) { e.printStackTrace(); }
+            } else {
+                showErrorMessage("Les mots de passe doivent contenir 8 chiffres et être identiques.");
             }
         });
-        this.updateButton.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ChangePasswordFragment$$ExternalSyntheticLambda3
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view2) throws JSONException {
-                this.f$0.m86x16f2c595(view2);
-            }
-        });
     }
 
-    /* renamed from: lambda$onViewCreated$0$com-example-myadermoshop-ChangePasswordFragment, reason: not valid java name */
-    /* synthetic */ void m85x17692b94(View view) throws JSONException {
-        validatePassword(getExistingPassword());
-    }
-
-    /* renamed from: lambda$onViewCreated$1$com-example-myadermoshop-ChangePasswordFragment, reason: not valid java name */
-    /* synthetic */ void m86x16f2c595(View view) throws JSONException {
-        String string = this.newPassword1.getText().toString();
-        String string2 = this.newPassword2.getText().toString();
-        if (isPasswordValid(string) && string.equals(string2)) {
-            changePassword(string);
-        } else {
-            showErrorMessage("New passwords must be 8 numeric characters and match.");
-        }
-    }
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private String getExistingPassword() {
-        return this.existingPassword1.getText().toString() + this.existingPassword2.getText().toString() + this.existingPassword3.getText().toString() + this.existingPassword4.getText().toString() + this.existingPassword5.getText().toString() + this.existingPassword6.getText().toString() + this.existingPassword7.getText().toString() + this.existingPassword8.getText().toString();
+        return existingPassword1.getText().toString()
+                + existingPassword2.getText().toString()
+                + existingPassword3.getText().toString()
+                + existingPassword4.getText().toString()
+                + existingPassword5.getText().toString()
+                + existingPassword6.getText().toString()
+                + existingPassword7.getText().toString()
+                + existingPassword8.getText().toString();
     }
 
-    private boolean isPasswordValid(String str) {
-        return str.matches("\\d{8}");
+    private boolean isPasswordValid(String password) {
+        return password.matches("\\d{8}");
     }
 
-    private void setUpEditText(final EditText editText, final EditText editText2) {
-        editText.addTextChangedListener(new TextWatcher() { // from class: com.example.myadermoshop.ChangePasswordFragment.1
-            @Override // android.text.TextWatcher
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override // android.text.TextWatcher
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            }
-
-            @Override // android.text.TextWatcher
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() != 1 || editText == ChangePasswordFragment.this.existingPassword8) {
-                    return;
+    /** Auto-advances focus from `current` to `next` after 1 character is typed. */
+    private void setUpEditText(final EditText current, final EditText next) {
+        current.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 1 && current != existingPassword8) {
+                    next.requestFocus();
                 }
-                editText2.requestFocus();
             }
         });
     }
 
-    private void validatePassword(String str) throws JSONException {
-        Log.d(TAG, "Validating existing password: " + str);
-        String string = this.sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null);
-        String string2 = this.sharedPreferences.getString("employeeID", null);
-        if (string == null || string2 == null) {
-            showErrorMessage("API key or employee ID not found");
+    // ── Network: validate existing password ───────────────────────────────────
+
+    private void validatePassword(String password) throws JSONException {
+        Log.d(TAG, "Validating existing password");
+        String apiKey     = sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null);
+        String employeeID = sharedPreferences.getString("employeeID", null);
+        if (apiKey == null || employeeID == null) {
+            showErrorMessage("Clé API ou ID employé introuvable.");
             return;
         }
-        JSONObject jSONObject = new JSONObject();
-        try {
-            jSONObject.put(DatabaseHelper.COLUMN_API_KEY, string);
-            jSONObject.put("employeeID", string2);
-            jSONObject.put("password", str);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Volley.newRequestQueue(getActivity()).add(new JsonObjectRequest(1, "https://adermoburundi.xyz/api/check_password_validity.php", jSONObject, new Response.Listener() { // from class: com.example.myadermoshop.ChangePasswordFragment$$ExternalSyntheticLambda0
-            @Override // com.android.volley.Response.Listener
-            public void onResponse(Object obj) throws JSONException {
-                this.f$0.m87xffe865dd((JSONObject) obj);
-            }
-        }, new Response.ErrorListener() { // from class: com.example.myadermoshop.ChangePasswordFragment$$ExternalSyntheticLambda1
-            @Override // com.android.volley.Response.ErrorListener
-            public void onErrorResponse(VolleyError volleyError) {
-                this.f$0.m88xff71ffde(volleyError);
-            }
-        }));
+        JSONObject body = new JSONObject();
+        body.put(DatabaseHelper.COLUMN_API_KEY, apiKey);
+        body.put("employeeID", employeeID);
+        body.put("password", password);
+
+        Volley.newRequestQueue(requireActivity()).add(
+                new JsonObjectRequest(JsonObjectRequest.Method.POST,
+                        "https://adermoburundi.xyz/api/check_password_validity.php",
+                        body,
+                        response -> {
+                            try {
+                                boolean success = response.getBoolean("success");
+                                String  message = response.getString("message");
+                                Log.d(TAG, "Validate response: " + response);
+                                if (success) {
+                                    showSuccessMessage(message);
+                                    newPassword1.setEnabled(true);
+                                    newPassword2.setEnabled(true);
+                                    updateButton.setEnabled(true);
+                                } else {
+                                    showErrorMessage(message);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                showErrorMessage("Une erreur s'est produite.");
+                            }
+                        },
+                        error -> {
+                            error.printStackTrace();
+                            showErrorMessage("Erreur : " + error.getMessage());
+                        }));
     }
 
-    /* renamed from: lambda$validatePassword$2$com-example-myadermoshop-ChangePasswordFragment, reason: not valid java name */
-    /* synthetic */ void m87xffe865dd(JSONObject jSONObject) throws JSONException {
-        try {
-            boolean z = jSONObject.getBoolean("success");
-            String string = jSONObject.getString("message");
-            Log.d(TAG, "Response: " + jSONObject);
-            if (z) {
-                showSuccessMessage(string);
-                this.newPassword1.setEnabled(true);
-                this.newPassword2.setEnabled(true);
-                this.updateButton.setEnabled(true);
-            } else {
-                showErrorMessage(string);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            showErrorMessage("An error occurred");
-        }
-    }
+    // ── Network: change password ──────────────────────────────────────────────
 
-    /* renamed from: lambda$validatePassword$3$com-example-myadermoshop-ChangePasswordFragment, reason: not valid java name */
-    /* synthetic */ void m88xff71ffde(VolleyError volleyError) {
-        volleyError.printStackTrace();
-        showErrorMessage("Error: " + volleyError.getMessage());
-    }
-
-    private void changePassword(String str) throws JSONException {
-        Log.d(TAG, "Changing password to: " + str);
-        String string = this.sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null);
-        String string2 = this.sharedPreferences.getString("employeeID", null);
-        String existingPassword = getExistingPassword();
-        if (string == null || string2 == null) {
-            showErrorMessage("API key or employee ID not found");
+    private void changePassword(String newPassword) throws JSONException {
+        Log.d(TAG, "Changing password");
+        String apiKey     = sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null);
+        String employeeID = sharedPreferences.getString("employeeID", null);
+        if (apiKey == null || employeeID == null) {
+            showErrorMessage("Clé API ou ID employé introuvable.");
             return;
         }
-        JSONObject jSONObject = new JSONObject();
-        try {
-            jSONObject.put(DatabaseHelper.COLUMN_API_KEY, string);
-            jSONObject.put("employeeID", string2);
-            jSONObject.put("existingPassword", existingPassword);
-            jSONObject.put("newPassword", str);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Volley.newRequestQueue(getActivity()).add(new JsonObjectRequest(1, "https://adermoburundi.xyz/api/change_password.php", jSONObject, new Response.Listener() { // from class: com.example.myadermoshop.ChangePasswordFragment$$ExternalSyntheticLambda4
-            @Override // com.android.volley.Response.Listener
-            public void onResponse(Object obj) throws JSONException {
-                this.f$0.m83x5fd49b39((JSONObject) obj);
-            }
-        }, new Response.ErrorListener() { // from class: com.example.myadermoshop.ChangePasswordFragment$$ExternalSyntheticLambda5
-            @Override // com.android.volley.Response.ErrorListener
-            public void onErrorResponse(VolleyError volleyError) {
-                this.f$0.m84x5f5e353a(volleyError);
-            }
-        }));
+        JSONObject body = new JSONObject();
+        body.put(DatabaseHelper.COLUMN_API_KEY, apiKey);
+        body.put("employeeID", employeeID);
+        body.put("existingPassword", getExistingPassword());
+        body.put("newPassword", newPassword);
+
+        Volley.newRequestQueue(requireActivity()).add(
+                new JsonObjectRequest(JsonObjectRequest.Method.POST,
+                        "https://adermoburundi.xyz/api/change_password.php",
+                        body,
+                        response -> {
+                            try {
+                                boolean success = response.getBoolean("success");
+                                String  message = response.getString("message");
+                                Log.d(TAG, "Change response: " + response);
+                                if (success) {
+                                    showSuccessMessage(message);
+                                    clearFields();
+                                } else {
+                                    showErrorMessage(message);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                showErrorMessage("Une erreur s'est produite.");
+                            }
+                        },
+                        error -> {
+                            error.printStackTrace();
+                            showErrorMessage("Erreur : " + error.getMessage());
+                        }));
     }
 
-    /* renamed from: lambda$changePassword$4$com-example-myadermoshop-ChangePasswordFragment, reason: not valid java name */
-    /* synthetic */ void m83x5fd49b39(JSONObject jSONObject) throws JSONException {
-        try {
-            boolean z = jSONObject.getBoolean("success");
-            String string = jSONObject.getString("message");
-            Log.d(TAG, "Response: " + jSONObject);
-            if (z) {
-                showSuccessMessage(string);
-                clearFields();
-            } else {
-                showErrorMessage(string);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            showErrorMessage("An error occurred");
-        }
-    }
-
-    /* renamed from: lambda$changePassword$5$com-example-myadermoshop-ChangePasswordFragment, reason: not valid java name */
-    /* synthetic */ void m84x5f5e353a(VolleyError volleyError) {
-        volleyError.printStackTrace();
-        showErrorMessage("Error: " + volleyError.getMessage());
-    }
+    // ── UI helpers ────────────────────────────────────────────────────────────
 
     private void clearFields() {
-        this.existingPassword1.setText("");
-        this.existingPassword2.setText("");
-        this.existingPassword3.setText("");
-        this.existingPassword4.setText("");
-        this.existingPassword5.setText("");
-        this.existingPassword6.setText("");
-        this.existingPassword7.setText("");
-        this.existingPassword8.setText("");
-        this.newPassword1.setText("");
-        this.newPassword2.setText("");
-        this.newPassword1.setEnabled(false);
-        this.newPassword2.setEnabled(false);
-        this.updateButton.setEnabled(false);
+        existingPassword1.setText("");
+        existingPassword2.setText("");
+        existingPassword3.setText("");
+        existingPassword4.setText("");
+        existingPassword5.setText("");
+        existingPassword6.setText("");
+        existingPassword7.setText("");
+        existingPassword8.setText("");
+        newPassword1.setText("");
+        newPassword2.setText("");
+        newPassword1.setEnabled(false);
+        newPassword2.setEnabled(false);
+        updateButton.setEnabled(false);
     }
 
-    private void showSuccessMessage(String str) {
-        this.statusMessage.setText(str);
-        this.statusMessage.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark));
+    private void showSuccessMessage(String message) {
+        statusMessage.setText(message);
+        statusMessage.setTextColor(
+                ContextCompat.getColor(requireActivity(), R.color.ios_green));
     }
 
-    private void showErrorMessage(String str) {
-        this.statusMessage.setText(str);
-        this.statusMessage.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
+    private void showErrorMessage(String message) {
+        statusMessage.setText(message);
+        statusMessage.setTextColor(
+                ContextCompat.getColor(requireActivity(), R.color.ios_red));
     }
 }

@@ -1,16 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    ITEM SALE SIMPLE — iOS Style
-    Used in: all sales fragment  (getAllCarts() / getCartsBetweenDates())
-    Structurally IDENTICAL to item_sale_card — it IS a full Cart card,
-    not a single row. Same Cart ID + date header, same column headers,
-    same linearLayoutProducts container, same total footer.
-    The only difference from item_sale_card is context: this shows ALL
-    historical sales, item_sale_card shows only today's.
-
-    IDs: textViewCartID, textViewCartDate,
-         linearLayoutProducts, textViewTotalAmount
--->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- ── Header: Cart ID + Date ── -->
+        <!-- Header: Cart ID + Date -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -57,13 +45,14 @@
                 android:text="Date"
                 android:textColor="@color/ios_label2"
                 android:textSize="13sp"/>
-
         </LinearLayout>
 
-        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
             android:background="@color/ios_sep"/>
 
-        <!-- ── Column headers ── -->
+        <!-- Column headers -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -119,23 +108,27 @@
                 android:textStyle="bold"
                 android:textAllCaps="true"
                 android:letterSpacing="0.04"/>
-
         </LinearLayout>
 
-        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
             android:background="@color/ios_sep"/>
 
-        <!-- ── Product rows — adapter inflates item_sale_row here ── -->
+        <!-- Product rows container -->
         <LinearLayout
             android:id="@+id/linearLayoutProducts"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"/>
 
-        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
             android:background="@color/ios_sep"/>
 
-        <!-- ── Total footer ── -->
+        <!-- Total footer -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -160,6 +153,7 @@
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp">
+
                 <TextView
                     android:id="@+id/textViewTotalAmount"
                     android:layout_width="wrap_content"
@@ -173,8 +167,6 @@
                     android:textSize="14sp"
                     android:textStyle="bold"/>
             </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
-
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

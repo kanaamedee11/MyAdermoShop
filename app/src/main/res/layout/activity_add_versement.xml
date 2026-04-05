@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    ACTIVITY ADD VERSEMENT — iOS Style
-    View IDs kept exactly as referenced by AddVersementActivity.java:
-      toolbar, spinnerPaymentType,
-      etExpectedAmount, etVersedAmount, etResteAmount,
-      btnSelectImage, ivSelectedImage, btnAddVersement
--->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/ios_bg">
 
-    <!-- ── Navigation bar ── -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +27,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- ── Scrollable form ── -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,7 +39,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- SECTION: Type de Paiement -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,7 +88,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- SECTION: Montants -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -126,7 +115,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <!-- Montant Attendu (read-only) -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
@@ -160,7 +148,6 @@
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
 
-                    <!-- Montant Versé -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
@@ -193,7 +180,6 @@
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
 
-                    <!-- Reste (read-only) -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
@@ -228,7 +214,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- SECTION: Image du Versement -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -256,18 +241,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <!-- Preview image -->
                     <ImageView
                         android:id="@+id/ivSelectedImage"
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
-                        android:src="@mipmap/ic_placeholder_image"
+                        android:src="@drawable/ic_product_placeholder"
                         android:scaleType="centerCrop"/>
 
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:background="@color/ios_sep"/>
 
-                    <!-- Choisir image row -->
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
@@ -305,7 +288,6 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- ── Bottom sticky CTA ── -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddVersement"
         android:layout_width="match_parent"

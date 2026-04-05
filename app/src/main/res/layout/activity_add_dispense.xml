@@ -51,7 +51,7 @@
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Montant"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <EditText android:id="@+id/editTextAmount" android:layout_width="120dp"
+                        <EditText android:id="@+id/etDispenseAmount" android:layout_width="120dp"
                             android:layout_height="match_parent" android:background="@null"
                             android:gravity="end" android:hint="0 BIF"
                             android:inputType="numberDecimal" android:textColor="@color/ios_label"

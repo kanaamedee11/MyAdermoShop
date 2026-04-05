@@ -40,7 +40,7 @@
             app:backgroundTint="@color/ios_btn"
             app:cornerRadius="12dp"
             app:elevation="0dp"
-            app:icon="@drawable/ic_bluetooth"
+            app:icon="@drawable/ic_search"
             app:iconTint="@color/ios_btn_text"/>
 
         <TextView

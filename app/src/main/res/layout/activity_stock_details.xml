@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- STOCK DETAILS — product hero + grouped info/finance sections + CTA -->
+<!--
+    ACTIVITY STOCK DETAILS — iOS Style
+    All IDs from StockDetailsActivity.java:
+      imageViewProduct, imageViewFacture
+      textViewProductTitle, tvDecision
+      textViewTotalAmount, textViewPieces,
+      textViewManufactureDate, textViewExpirationDate,
+      textViewSupplierName, textViewSupplierContact
+      textViewPU, tvTotalAmountUsed,
+      tvExpectedSellingAmount, tvBenefice,
+      tvDate, tvUploadStatus
+      buttonCreateInstances, progressBar, toolbar
+-->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,73 +19,67 @@
     android:layout_height="match_parent"
     android:background="@color/ios_bg">
 
+    <!-- ── Toolbar ── -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ios_nav"
         app:elevation="0dp">
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/ios_nav"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="@color/ios_blue"
-            app:title="Détails"
+            app:title="Détails du Stock"
             app:titleTextAppearance="@style/T.NavTitle"/>
-        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/ios_sep"/>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:background="@color/ios_sep"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
         android:paddingBottom="24dp"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <!-- Product image — full-width, no card border (iOS detail style) -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- ── Hero product image ── -->
             <ImageView
                 android:id="@+id/imageViewProduct"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/ic_placeholder_image_foreground"
-                android:contentDescription="Product"/>
+                android:src="@drawable/ic_product_placeholder"
+                android:contentDescription="Product Image"/>
 
-            <!-- Title + decision badge -->
+            <!-- ── Product title + decision badge ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp">
-                <LinearLayout
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    android:id="@+id/textViewProductTitle"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/textViewProductTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Titre du Produit"
-                        android:textColor="@color/ios_label"
-                        android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.007"/>
-                    <TextView
-                        android:id="@+id/textViewSubtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Fournisseur · Quantité"
-                        android:textColor="@color/ios_label2"
-                        android:textSize="15sp"/>
-                </LinearLayout>
-                <!-- Decision badge -->
+                    android:text="Titre du Produit"
+                    android:textColor="@color/ios_label"
+                    android:textSize="22sp"
+                    android:textStyle="bold"/>
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,20 +101,21 @@
                         android:textSize="13sp"
                         android:textStyle="bold"/>
                 </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
 
-            <!-- ── Section: Informations ── -->
+            <!-- ── INFORMATIONS section ── -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
                 android:text="INFORMATIONS"
                 android:textColor="@color/ios_label2"
                 android:textSize="13sp"
                 android:textAllCaps="true"
-                android:letterSpacing="0.04"/>
+                android:letterSpacing="0.04"
+                android:paddingStart="32dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="8dp"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -119,105 +126,112 @@
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                <LinearLayout android:orientation="vertical"
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
 
-                    <!-- Montant total -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <!-- Montant Total -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Montant Total"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/textViewTotalAmount" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="600 BIF"
+                        <TextView android:id="@+id/textViewTotalAmount"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_label2" android:textSize="17sp"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
                     <!-- Pièces -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Pièces"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/textViewPieces" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="20"
+                        <TextView android:id="@+id/textViewPieces"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_label2" android:textSize="17sp"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
-                    <!-- Fabrication -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+
+                    <!-- Date de Fabrication -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Fabrication"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/textViewManufactureDate" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="2024/01/29"
+                        <TextView android:id="@+id/textViewManufactureDate"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_label2" android:textSize="17sp"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
-                    <!-- Expiration -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+
+                    <!-- Date d'Expiration -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Expiration"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/textViewExpirationDate" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="2025/12/24"
+                        <TextView android:id="@+id/textViewExpirationDate"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_green" android:textSize="17sp"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
                     <!-- Fournisseur -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Fournisseur"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/textViewSupplierName" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="Barundi"
+                        <TextView android:id="@+id/textViewSupplierName"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_label2" android:textSize="17sp"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text=" ›" android:textColor="@color/ios_label3" android:textSize="17sp"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
-                    <!-- Contact -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+
+                    <!-- Contact fournisseur -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Contact"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/textViewContact" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="+257 79 000 000"
+                        <TextView android:id="@+id/textViewSupplierContact"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_blue" android:textSize="17sp"/>
                     </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ── Section: Finances ── -->
+            <!-- ── ANALYSE FINANCIÈRE section ── -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"
                 android:text="ANALYSE FINANCIÈRE"
                 android:textColor="@color/ios_label2"
                 android:textSize="13sp"
                 android:textAllCaps="true"
-                android:letterSpacing="0.04"/>
+                android:letterSpacing="0.04"
+                android:paddingStart="32dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="8dp"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -228,82 +242,155 @@
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+                <LinearLayout android:orientation="vertical"
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+                    <!-- Montant Utilisé -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Montant Utilisé"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/tvTotalAmountUsed" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="600 BIF"
+                        <TextView android:id="@+id/tvTotalAmountUsed"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_label2" android:textSize="17sp"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+
+                    <!-- Prix de Vente Prévu -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Prix de Vente Prévu"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
-                        <TextView android:id="@+id/tvExpectedSellingAmount" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="900 BIF"
+                        <TextView android:id="@+id/tvExpectedSellingAmount"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/ios_label2" android:textSize="17sp"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+
+                    <!-- Bénéfice -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Bénéfice"
-                            android:textColor="@color/ios_label" android:textSize="17sp" android:textStyle="bold"/>
-                        <TextView android:id="@+id/tvBenefice" android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:text="+300 BIF"
-                            android:textColor="@color/ios_green" android:textSize="17sp" android:textStyle="bold"/>
+                            android:textColor="@color/ios_label" android:textSize="17sp"
+                            android:textStyle="bold"/>
+                        <TextView android:id="@+id/tvBenefice"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textColor="@color/ios_green" android:textSize="17sp"
+                            android:textStyle="bold"/>
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="0.5dp"
                         android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:gravity="center_vertical" android:orientation="horizontal"
-                        android:paddingStart="16dp" android:paddingEnd="16dp">
+
+                    <!-- Prix par Unité -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Prix par Unité (P.U)"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/textViewPU"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Date -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
+                        <TextView android:layout_width="0dp" android:layout_weight="1"
+                            android:layout_height="wrap_content" android:text="Date"
+                            android:textColor="@color/ios_label" android:textSize="17sp"/>
+                        <TextView android:id="@+id/tvDate"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textColor="@color/ios_label2" android:textSize="17sp"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                    <!-- Statut Téléchargement -->
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_width="match_parent" android:layout_height="52dp"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_weight="1"
                             android:layout_height="wrap_content" android:text="Statut Téléchargement"
                             android:textColor="@color/ios_label" android:textSize="17sp"/>
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            app:cardBackgroundColor="@color/ios_red_bg" app:cardCornerRadius="6dp" app:cardElevation="0dp" app:strokeWidth="0dp">
+                            app:cardBackgroundColor="@color/ios_red_bg" app:cardCornerRadius="6dp"
+                            app:cardElevation="0dp" app:strokeWidth="0dp">
                             <TextView android:id="@+id/tvUploadStatus"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:paddingStart="8dp" android:paddingEnd="8dp"
                                 android:paddingTop="3dp" android:paddingBottom="3dp"
-                                android:text="Non téléchargé" android:textColor="@color/ios_red"
+                                android:text="Non téléchargé"
+                                android:textColor="@color/ios_red"
                                 android:textSize="13sp" android:textStyle="bold"/>
                         </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- CTA -->
+            <!-- ── FACTURE section ── -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FACTURE"
+                android:textColor="@color/ios_label2"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"
+                android:paddingStart="32dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="8dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/ios_bg2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+                <ImageView
+                    android:id="@+id/imageViewFacture"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_product_placeholder"
+                    android:contentDescription="Facture Image"/>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Create instances button ── -->
             <com.google.android.material.button.MaterialButton
+                style="@style/B.Primary"
                 android:id="@+id/buttonCreateInstances"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="28dp"
-                android:text="Créer les Barcodes"
-                android:textColor="@color/ios_btn_text"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:letterSpacing="-0.004"
-                android:stateListAnimator="@null"
-                app:backgroundTint="@color/ios_btn"
-                app:cornerRadius="12dp"
-                app:elevation="0dp"/>
+                android:layout_marginTop="24dp"
+                android:text="Créer les Barcodes (Instances)"
+                android:visibility="gone"/>
 
+            <!-- ── Progress bar ── -->
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleHorizontal"
@@ -311,11 +398,12 @@
                 android:layout_height="3dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
                 android:indeterminate="true"
                 android:indeterminateTint="@color/ios_blue"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

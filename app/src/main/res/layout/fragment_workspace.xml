@@ -7,28 +7,23 @@
     android:background="@color/ios_bg"
     android:orientation="vertical">
 
-    <!-- iOS Segmented-style TabLayout -->
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+        android:id="@+id/tabLayoutWorkspace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ios_nav"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/ios_blue"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
-        app:tabRippleColor="@color/ios_blue_bg"
         app:tabSelectedTextColor="@color/ios_blue"
-        app:tabTextColor="@color/ios_label2"/>
+        app:tabTextColor="@color/ios_label2"
+        app:tabTextAppearance="@style/T.Subhead"/>
 
     <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/ios_sep"/>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
+        android:id="@+id/viewPagerWorkspace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -17,14 +17,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-/* loaded from: classes.dex */
 public class PhysicalControlCardAdapter extends PagerAdapter {
     private final Context context;
     private final DatabaseHelper dbHelper;
     private final List<Double> foundQuantities;
     private final List<Product> productList;
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object obj) {
         return view == obj;
     }
@@ -36,28 +35,44 @@ public class PhysicalControlCardAdapter extends PagerAdapter {
         this.dbHelper = databaseHelper;
     }
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    @Override
     public int getCount() {
         return this.productList.size();
     }
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    @Override
     @NonNull
     public Object instantiateItem(@NonNull ViewGroup viewGroup, final int i) {
         View viewInflate = LayoutInflater.from(this.context).inflate(R.layout.item_physical_control_card, viewGroup, false);
         Product product = this.productList.get(i);
         
-        TextView textView = viewInflate.findViewById(R.id.tvProductName);
-        TextView textView2 = viewInflate.findViewById(R.id.tvExpectedQty);
-        TextView textViewActual = viewInflate.findViewById(R.id.tvActualQty);
+        ImageView imageView = viewInflate.findViewById(R.id.imageViewProduct);
+        TextView textView = viewInflate.findViewById(R.id.textViewProductName);
+        TextView textView2 = viewInflate.findViewById(R.id.textViewExpectedItems);
+        EditText editText = viewInflate.findViewById(R.id.editTextFoundQuantity);
         
         textView.setText(product.getProductName());
-        textView2.setText(String.format(Locale.getDefault(), "Prévu: %.2f", getTotalRemaining(product)));
-        textViewActual.setText(String.format(Locale.getDefault(), "Réel: %.2f", this.foundQuantities.get(i)));
-
-        // Note: The layout item_physical_control_card.xml does not have an EditText or an ImageView with an ID.
-        // If editing is required, the layout might need to be updated.
+        textView2.setText("Attendus: " + String.format(Locale.getDefault(), "%.2f", getTotalRemaining(product)));
+        editText.setText(String.format(Locale.getDefault(), "%.2f", this.foundQuantities.get(i)));
         
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i2, int i3, int i4) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i2, int i3, int i4) {
+                try {
+                    PhysicalControlCardAdapter.this.foundQuantities.set(i, Double.parseDouble(charSequence.toString()));
+                } catch (NumberFormatException unused) {
+                    PhysicalControlCardAdapter.this.foundQuantities.set(i, 0.0d);
+                }
+            }
+        });
+        
+        loadProductImage(product.getProductID(), imageView);
         viewGroup.addView(viewInflate);
         return viewInflate;
     }
@@ -85,7 +100,19 @@ public class PhysicalControlCardAdapter extends PagerAdapter {
         return d;
     }
 
-    @Override // androidx.viewpager.widget.PagerAdapter
+    private void loadProductImage(String str, ImageView imageView) {
+        String productPhotoName = this.dbHelper.getProductPhotoName(str);
+        if (productPhotoName != null && !productPhotoName.isEmpty()) {
+            File file = new File(this.context.getFilesDir(), "products/" + productPhotoName);
+            if (file.exists()) {
+                Glide.with(this.context).load(file).into(imageView);
+                return;
+            }
+        }
+        imageView.setImageResource(R.mipmap.ic_adermologo_foreground);
+    }
+
+    @Override
     public void destroyItem(@NonNull ViewGroup viewGroup, int i, @NonNull Object obj) {
         viewGroup.removeView((View) obj);
     }

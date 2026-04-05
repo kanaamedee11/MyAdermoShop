@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    FRAGMENT CLOSING — iOS Style
-    IDs: etStartDate, etEndDate, btnSearch, btnShowAll, recyclerViewClosing
--->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/ios_bg">
 
-    <!-- Filter toolbar card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,7 +85,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@null"
-                android:src="@drawable/ic_list_all"
+                android:src="@drawable/ic_menu"
                 android:contentDescription="Tout afficher"
                 app:tint="@color/ios_blue"/>
 

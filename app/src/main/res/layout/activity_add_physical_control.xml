@@ -145,7 +145,7 @@
                 app:backgroundTint="@color/ios_blue_bg"
                 app:cornerRadius="10dp"
                 app:elevation="0dp"
-                app:icon="@drawable/ic_scan"
+                app:icon="@drawable/ic_camera"
                 app:iconTint="@color/ios_blue"
                 app:iconGravity="textStart"/>
 

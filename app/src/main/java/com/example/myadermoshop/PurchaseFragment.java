@@ -1,5 +1,6 @@
 package com.example.myadermoshop;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,14 +17,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.example.myadermoshop.DatabaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes.dex */
 public class PurchaseFragment extends Fragment {
+
     private static final String TAG = "PurchaseFragment";
+
     private StockAdapter adapter;
     private DatabaseHelper dbHelper;
     private HttpService httpService;
@@ -32,150 +33,171 @@ public class PurchaseFragment extends Fragment {
     private List<Stock> stockList;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    @Override // androidx.fragment.app.Fragment
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        View viewInflate = layoutInflater.inflate(R.layout.fragment_purchase, viewGroup, false);
-        this.dbHelper = new DatabaseHelper(getActivity());
-        this.httpService = RetrofitInstance.getHttpService();
-        RecyclerView recyclerView = viewInflate.findViewById(R.id.recyclerViewPurchases);
-        this.recyclerViewPurchases = recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        SwipeRefreshLayout swipeRefreshLayout = viewInflate.findViewById(R.id.swipeRefreshLayout);
-        this.swipeRefreshLayout = swipeRefreshLayout;
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() { // from class: com.example.myadermoshop.PurchaseFragment$$ExternalSyntheticLambda0
-            @Override // androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-            public void onRefresh() {
-                this.f$0.m118lambda$onCreateView$0$comexamplemyadermoshopPurchaseFragment();
-            }
-        });
-        FloatingActionButton floatingActionButton = viewInflate.findViewById(R.id.fab_add_purchase);
-        this.stockList = new ArrayList();
-        StockAdapter stockAdapter = new StockAdapter(this.stockList, this.dbHelper, getActivity(), this.httpService);
-        this.adapter = stockAdapter;
-        this.recyclerViewPurchases.setAdapter(stockAdapter);
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_purchase, container, false);
+
+        dbHelper    = new DatabaseHelper(getActivity());
+        httpService = RetrofitInstance.getHttpService();
+
+        recyclerViewPurchases = view.findViewById(R.id.recyclerViewPurchases);
+        recyclerViewPurchases.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
+
+        FloatingActionButton fabAddPurchase = view.findViewById(R.id.fab_add_purchase);
+
+        stockList = new ArrayList<>();
+        adapter   = new StockAdapter(stockList, dbHelper, getActivity(), httpService);
+        recyclerViewPurchases.setAdapter(adapter);
+
         loadPurchaseData();
-        floatingActionButton.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.PurchaseFragment$$ExternalSyntheticLambda1
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                this.f$0.m119lambda$onCreateView$1$comexamplemyadermoshopPurchaseFragment(view);
-            }
+
+        fabAddPurchase.setOnClickListener(v -> {
+            if (Utils.checkAndDisplayClosure(getActivity(), dbHelper)) return;
+            startActivity(new Intent(getActivity(), AddPurchaseActivity.class));
         });
-        this.refreshReceiver = new BroadcastReceiver() { // from class: com.example.myadermoshop.PurchaseFragment.2
-            @Override // android.content.BroadcastReceiver
+
+        // ── Listen for external refresh requests ──
+        refreshReceiver = new BroadcastReceiver() {
+            @Override
             public void onReceive(Context context, Intent intent) {
-                PurchaseFragment.this.loadPurchaseData();
+                loadPurchaseData();
             }
         };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(this.refreshReceiver, new IntentFilter("REFRESH_PURCHASE_LIST"));
-        return viewInflate;
+        LocalBroadcastManager.getInstance(getActivity())
+                .registerReceiver(refreshReceiver,
+                        new IntentFilter("REFRESH_PURCHASE_LIST"));
+
+        return view;
     }
 
-    /* renamed from: lambda$onCreateView$0$com-example-myadermoshop-PurchaseFragment, reason: not valid java name */
-    /* synthetic */ void m118lambda$onCreateView$0$comexamplemyadermoshopPurchaseFragment() {
-        if (this.dbHelper.isNetworkConnected()) {
-            this.dbHelper.getFromServerStocks(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.PurchaseFragment.1
-                @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
+    private void onRefresh() {
+        if (dbHelper.isNetworkConnected()) {
+            dbHelper.getFromServerStocks(new DatabaseHelper.DataUpdateCallback() {
+                @Override
                 public void onComplete() {
-                    PurchaseFragment.this.loadPurchaseData();
-                    PurchaseFragment.this.swipeRefreshLayout.setRefreshing(false);
+                    loadPurchaseData();
+                    swipeRefreshLayout.setRefreshing(false);
                 }
 
-                @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-                public void onFailure(String str) {
-                    Log.e(PurchaseFragment.TAG, str);
-                    Toast.makeText(PurchaseFragment.this.getActivity(), "Failed to refresh data: " + str, 0).show();
-                    PurchaseFragment.this.swipeRefreshLayout.setRefreshing(false);
-                }
-            });
-            return;
-        }
-        loadPurchaseData();
-        this.swipeRefreshLayout.setRefreshing(false);
-        Toast.makeText(getActivity(), "No network connection. Showing offline data.", 0).show();
-    }
-
-    /* renamed from: lambda$onCreateView$1$com-example-myadermoshop-PurchaseFragment, reason: not valid java name */
-    /* synthetic */ void m119lambda$onCreateView$1$comexamplemyadermoshopPurchaseFragment(View view) {
-        if (Utils.checkAndDisplayClosure(getActivity(), this.dbHelper)) {
-            return;
-        }
-        startActivity(new Intent(getActivity(), AddPurchaseActivity.class));
-    }
-
-    @Override // androidx.fragment.app.Fragment
-    public void onResume() {
-        super.onResume();
-        if (this.dbHelper.isNetworkConnected()) {
-            this.dbHelper.getFromServerStocks(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.PurchaseFragment.3
-                @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-                public void onComplete() {
-                    PurchaseFragment.this.loadPurchaseData();
-                }
-
-                @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-                public void onFailure(String str) {
-                    Log.e(PurchaseFragment.TAG, str);
-                    Toast.makeText(PurchaseFragment.this.getActivity(), "Failed to refresh data: " + str, 0).show();
+                @Override
+                public void onFailure(String message) {
+                    Log.e(TAG, message);
+                    Toast.makeText(getActivity(),
+                            "Échec du rafraîchissement: " + message,
+                            Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             });
         } else {
             loadPurchaseData();
-            Toast.makeText(getActivity(), "No network connection. Showing offline data.", 0).show();
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(getActivity(),
+                    "Pas de connexion. Données hors ligne affichées.",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (dbHelper.isNetworkConnected()) {
+            dbHelper.getFromServerStocks(new DatabaseHelper.DataUpdateCallback() {
+                @Override
+                public void onComplete() {
+                    loadPurchaseData();
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.e(TAG, message);
+                    Toast.makeText(getActivity(),
+                            "Échec du rafraîchissement: " + message,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            loadPurchaseData();
+            Toast.makeText(getActivity(),
+                    "Pas de connexion. Données hors ligne affichées.",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(this.refreshReceiver);
+        LocalBroadcastManager.getInstance(getActivity())
+                .unregisterReceiver(refreshReceiver);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void loadPurchaseData() {
-        this.stockList.clear();
-        Cursor allStocksCursor = this.dbHelper.getAllStocksCursor();
-        if (allStocksCursor != null) {
-            Log.d(TAG, "Cursor count: " + allStocksCursor.getCount());
-            logColumnNames(allStocksCursor);
-            if (!allStocksCursor.moveToFirst()) {
-                Log.d(TAG, "No stocks found.");
-                Toast.makeText(getActivity(), "No stocks found", 0).show();
-            } else {
-                do {
-                    try {
-                        Stock stock = new Stock();
-                        stock.setStockID(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_ID)));
-                        stock.setStockDateTime(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_DATE_TIME)));
-                        stock.setStockQuantity(allStocksCursor.getInt(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_QUANTITY)));
-                        stock.setTotalAmountUsed(allStocksCursor.getDouble(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_TOTAL_AMOUNT_USED)));
-                        stock.setProductID(allStocksCursor.getString(allStocksCursor.getColumnIndex("productID")));
-                        stock.setStockManDate(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_MAN_DATE)));
-                        stock.setStockExpDate(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_EXP_DATE)));
-                        stock.setSupplierName(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_SUPPLIER_NAME)));
-                        stock.setSupplierContact(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_SUPPLIER_CONTACT)));
-                        stock.setFactureNumber(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_FACTURE_NUMBER)));
-                        stock.setFactureImageName(allStocksCursor.getString(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_FACTURE_IMAGE_NAME)));
-                        stock.setPaymentTypeID(allStocksCursor.getInt(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_PAYMENT_TYPE_ID)));
-                        stock.setStatusID(allStocksCursor.getInt(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_STATUS_ID)));
-                        stock.setEmployeeID(allStocksCursor.getString(allStocksCursor.getColumnIndex("employeeID")));
-                        stock.setUploadStatus(allStocksCursor.getInt(allStocksCursor.getColumnIndex(DatabaseHelper.COLUMN_UPLOAD_STATUS)));
-                        this.stockList.add(stock);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error loading stock data", e);
-                    }
-                } while (allStocksCursor.moveToNext());
-            }
-            allStocksCursor.close();
-        } else {
+    @SuppressLint("Range")
+    private void loadPurchaseData() {
+        stockList.clear();
+        Cursor cursor = dbHelper.getAllStocksCursor();
+
+        if (cursor == null) {
             Log.d(TAG, "Cursor is null.");
-            Toast.makeText(getActivity(), "Failed to fetch data", 0).show();
+            Toast.makeText(getActivity(),
+                    "Échec de la récupération des données",
+                    Toast.LENGTH_SHORT).show();
+            adapter.notifyDataSetChanged();
+            return;
         }
-        this.adapter.notifyDataSetChanged();
-    }
 
-    private void logColumnNames(Cursor cursor) {
-        for (int i = 0; i < cursor.getColumnCount(); i++) {
-            Log.d(TAG, "Column " + i + ": " + cursor.getColumnName(i));
+        Log.d(TAG, "Cursor count: " + cursor.getCount());
+
+        if (!cursor.moveToFirst()) {
+            Log.d(TAG, "Aucun stock trouvé.");
+            cursor.close();
+            adapter.notifyDataSetChanged();
+            return;
         }
+
+        do {
+            try {
+                Stock stock = new Stock();
+                stock.setStockID(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_ID)));
+                stock.setStockDateTime(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_DATE_TIME)));
+                stock.setStockQuantity(cursor.getInt(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_QUANTITY)));
+                stock.setTotalAmountUsed(cursor.getDouble(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_TOTAL_AMOUNT_USED)));
+                stock.setProductID(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_PRODUCT_ID)));
+                stock.setStockManDate(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_MAN_DATE)));
+                stock.setStockExpDate(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_STOCK_EXP_DATE)));
+                stock.setSupplierName(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_SUPPLIER_NAME)));
+                stock.setSupplierContact(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_SUPPLIER_CONTACT)));
+                stock.setFactureNumber(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_FACTURE_NUMBER)));
+                stock.setFactureImageName(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_FACTURE_IMAGE_NAME)));
+                stock.setPaymentTypeID(cursor.getInt(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_PAYMENT_TYPE_ID)));
+                stock.setStatusID(cursor.getInt(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_STATUS_ID)));
+                stock.setEmployeeID(cursor.getString(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_EMPLOYEE_ID)));
+                stock.setUploadStatus(cursor.getInt(
+                        cursor.getColumnIndex(DatabaseHelper.COLUMN_UPLOAD_STATUS)));
+                stockList.add(stock);
+            } catch (Exception e) {
+                Log.e(TAG, "Erreur lors du chargement du stock", e);
+            }
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        adapter.notifyDataSetChanged();
     }
 }

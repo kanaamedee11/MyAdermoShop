@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/* loaded from: classes.dex */
 public class ImageDownloadUtil {
     private static final String TAG = "ImageDownloadUtil";
 
@@ -18,15 +17,19 @@ public class ImageDownloadUtil {
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
-        new Thread(new Runnable() { // from class: com.example.myadermoshop.ImageDownloadUtil$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public void run() throws IOException {
-                ImageDownloadUtil.lambda$downloadImage$0(str, file);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ImageDownloadUtil.lambda$downloadImage$0(str, file);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error downloading image", e);
+                }
             }
         }).start();
     }
 
-    static /* synthetic */ void lambda$downloadImage$0(String str, File file) throws IOException {
+    static void lambda$downloadImage$0(String str, File file) throws IOException {
         try {
             HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(str).openConnection();
             httpURLConnection.setDoInput(true);
@@ -51,6 +54,6 @@ public class ImageDownloadUtil {
     }
 
     public static void downloadImageWithCustomPath(Context context, String str, String str2) {
-        downloadImage(context, str, str2 + "/" + str.substring(str.lastIndexOf(47) + 1));
+        downloadImage(context, str, str2 + "/" + str.substring(str.lastIndexOf("/") + 1));
     }
 }

@@ -1,148 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    ITEM PRODUCT ON CART — iOS Style
-    Keeps all original IDs:
-      imageViewProduct, textViewProductName, textViewProductPrice,
-      textViewProductManufacture, textViewStockManDate, textViewStockExpDate,
-      textViewProductQuantity, buttonDelete
--->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:background="@color/ios_bg2"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingStart="16dp"
-    android:paddingEnd="12dp">
+    android:paddingEnd="12dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
-    <!-- Product image pill -->
+    <!-- ── Product Image ── -->
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="44dp"
-        android:layout_height="44dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="12dp"
         app:cardBackgroundColor="@color/ios_blue_bg"
         app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
         app:strokeWidth="0dp">
+
         <ImageView
             android:id="@+id/imageViewProduct"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="Photo produit"
             android:padding="8dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_product_placeholder"
-            android:contentDescription="Product Image"/>
+            android:src="@drawable/ic_product_placeholder" />
+
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Name + sub-details -->
+    <!-- ── Name + Price + Manufacture + Dates ── -->
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
 
+        <!-- Product Name -->
         <TextView
             android:id="@+id/textViewProductName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Product Name"
             android:textColor="@color/ios_label"
-            android:textSize="17sp"/>
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <!-- Price · Manufacture -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="2dp">
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/textViewProductPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 BIF"
-                android:textColor="@color/ios_label2"
-                android:textSize="13sp"/>
+                android:text="BIF 0.00"
+                android:textColor="@color/ios_blue"
+                android:textSize="13sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" · "
                 android:textColor="@color/ios_label2"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
+
             <TextView
                 android:id="@+id/textViewProductManufacture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Manufacture"
                 android:textColor="@color/ios_label2"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
+
         </LinearLayout>
 
         <!-- MAN date · EXP date -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="1dp">
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/textViewStockManDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MAN: —"
-                android:textColor="@color/ios_label3"
-                android:textSize="12sp"/>
+                android:textColor="@color/ios_label2"
+                android:textSize="12sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="   "
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/textViewStockExpDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="EXP: —"
-                android:textColor="@color/ios_label3"
-                android:textSize="12sp"/>
+                android:textColor="@color/ios_label2"
+                android:textSize="12sp" />
+
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- Quantity badge -->
+    <!-- ── Quantity Badge ── -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        app:cardBackgroundColor="@color/ios_btn2_bg"
+        app:cardBackgroundColor="@color/ios_blue_bg"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
         app:strokeWidth="0dp">
+
         <TextView
             android:id="@+id/textViewProductQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            android:gravity="center"
+            android:minWidth="28dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:text="1"
             android:textColor="@color/ios_blue"
-            android:textSize="15sp"
-            android:textStyle="bold"/>
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Delete -->
+    <!-- ── Delete Button ── -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonDelete"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:padding="0dp"
+        android:stateListAnimator="@null"
         android:text="×"
         android:textColor="@color/ios_red"
         android:textSize="18sp"
-        android:padding="0dp"
-        android:stateListAnimator="@null"
         app:backgroundTint="@color/ios_red_bg"
         app:cornerRadius="8dp"
-        app:elevation="0dp"/>
+        app:elevation="0dp" />
 
 </LinearLayout>

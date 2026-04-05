@@ -1,136 +1,72 @@
 package com.example.myadermoshop;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
-/**
- * ClosingSummaryAdapter
- * Outer card : card_closing_item.xml
- * Inner rows : item_sale_row.xml  (tvProductName, tvQty, tvUnitPrice, tvTotal)
- *   — used for both sales rows (linearLayoutSales)
- *   — and stock rows (linearLayoutStock)
- */
-public class ClosingSummaryAdapter
-        extends RecyclerView.Adapter<ClosingSummaryAdapter.ViewHolder> {
+public class ClosingSummary {
+    private String date;
+    private double totalPurchasePrice;
+    private double totalSalePrice;
+    private Map<String, Double> salesByPaymentType;
+    private List<CartItem> salesSummary;
+    private List<Stock> stockSummary;
 
-    private final Context context;
-    private final List<ClosingSummary> closingSummaryList;
-    private final DatabaseHelper dbHelper;
-
-    public ClosingSummaryAdapter(Context context, List<ClosingSummary> list) {
-        this.context           = context;
-        this.closingSummaryList = list;
-        this.dbHelper          = new DatabaseHelper(context);
+    public ClosingSummary(String date, double totalPurchasePrice, double totalSalePrice,
+                          Map<String, Double> salesByPaymentType, List<CartItem> salesSummary,
+                          List<Stock> stockSummary) {
+        this.date = date;
+        this.totalPurchasePrice = totalPurchasePrice;
+        this.totalSalePrice = totalSalePrice;
+        this.salesByPaymentType = salesByPaymentType;
+        this.salesSummary = salesSummary;
+        this.stockSummary = stockSummary;
     }
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context)
-                .inflate(R.layout.card_closing_item, parent, false);
-        return new ViewHolder(view);
+    public String getDate() {
+        return date;
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ClosingSummary summary = closingSummaryList.get(position);
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        holder.tvDate.setText(summary.getDate());
-        holder.tvClosingAmount.setText(
-                fmt0(summary.getTotalSalePrice()));
-        holder.tvTotalPurchasePrice.setText(
-                fmt0(summary.getTotalPurchasePrice()));
-        holder.tvTotalSalePrice.setText(
-                fmt0(summary.getTotalSalePrice()));
-
-        // ── Sales rows ──────────────────────────────────────────────────────
-        holder.linearLayoutSales.removeAllViews();
-        if (summary.getSalesSummary() != null) {
-            for (CartItem item : summary.getSalesSummary()) {
-                View row = inflater.inflate(
-                        R.layout.item_sale_row, holder.linearLayoutSales, false);
-                ((TextView) row.findViewById(R.id.tvProductName))
-                        .setText(item.getProductName());
-                ((TextView) row.findViewById(R.id.tvQty))
-                        .setText(fmt1(item.getQuantity()));
-                ((TextView) row.findViewById(R.id.tvUnitPrice))
-                        .setText(fmt0(item.getUnitPrice()));
-                ((TextView) row.findViewById(R.id.tvTotal))
-                        .setText(fmt0bif(item.getQuantity() * item.getUnitPrice()));
-                holder.linearLayoutSales.addView(row);
-            }
-        }
-
-        // ── Stock rows ──────────────────────────────────────────────────────
-        holder.linearLayoutStock.removeAllViews();
-        if (summary.getStockSummary() != null) {
-            for (Stock stock : summary.getStockSummary()) {
-                View row = inflater.inflate(
-                        R.layout.item_sale_row, holder.linearLayoutStock, false);
-                String productName = dbHelper.getProductName(stock.getProductID());
-                double pu = stock.getStockQuantity() > 0
-                        ? stock.getTotalAmountUsed() / stock.getStockQuantity() : 0;
-                ((TextView) row.findViewById(R.id.tvProductName))
-                        .setText(productName != null ? productName : stock.getProductID());
-                ((TextView) row.findViewById(R.id.tvQty))
-                        .setText(String.valueOf(stock.getStockQuantity()));
-                ((TextView) row.findViewById(R.id.tvUnitPrice))
-                        .setText(fmt0(pu));
-                ((TextView) row.findViewById(R.id.tvTotal))
-                        .setText(fmt0bif(stock.getTotalAmountUsed()));
-                holder.linearLayoutStock.addView(row);
-            }
-        }
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    @Override
-    public int getItemCount() {
-        return closingSummaryList != null ? closingSummaryList.size() : 0;
+    public double getTotalPurchasePrice() {
+        return totalPurchasePrice;
     }
 
-    // ── ViewHolder ────────────────────────────────────────────────────────────
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView     tvDate;
-        final TextView     tvClosingAmount;
-        final TextView     tvTotalPurchasePrice;
-        final TextView     tvTotalSalePrice;
-        final LinearLayout linearLayoutSales;
-        final LinearLayout linearLayoutStock;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvDate               = itemView.findViewById(R.id.tvDate);
-            tvClosingAmount      = itemView.findViewById(R.id.tvClosingAmount);
-            tvTotalPurchasePrice = itemView.findViewById(R.id.tvTotalPurchasePrice);
-            tvTotalSalePrice     = itemView.findViewById(R.id.tvTotalSalePrice);
-            linearLayoutSales    = itemView.findViewById(R.id.linearLayoutSales);
-            linearLayoutStock    = itemView.findViewById(R.id.linearLayoutStock);
-        }
+    public void setTotalPurchasePrice(double totalPurchasePrice) {
+        this.totalPurchasePrice = totalPurchasePrice;
     }
 
-    // ── Formatters ────────────────────────────────────────────────────────────
-
-    private static String fmt0(double v) {
-        return String.format(Locale.getDefault(), "%.0f", v);
+    public double getTotalSalePrice() {
+        return totalSalePrice;
     }
 
-    private static String fmt0bif(double v) {
-        return String.format(Locale.getDefault(), "%.0f BIF", v);
+    public void setTotalSalePrice(double totalSalePrice) {
+        this.totalSalePrice = totalSalePrice;
     }
 
-    private static String fmt1(double v) {
-        return String.format(Locale.getDefault(), "%.1f", v);
+    public Map<String, Double> getSalesByPaymentType() {
+        return salesByPaymentType;
+    }
+
+    public void setSalesByPaymentType(Map<String, Double> salesByPaymentType) {
+        this.salesByPaymentType = salesByPaymentType;
+    }
+
+    public List<CartItem> getSalesSummary() {
+        return salesSummary;
+    }
+
+    public void setSalesSummary(List<CartItem> salesSummary) {
+        this.salesSummary = salesSummary;
+    }
+
+    public List<Stock> getStockSummary() {
+        return stockSummary;
+    }
+
+    public void setStockSummary(List<Stock> stockSummary) {
+        this.stockSummary = stockSummary;
     }
 }
