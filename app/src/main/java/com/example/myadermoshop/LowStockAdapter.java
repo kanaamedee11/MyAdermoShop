@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.util.List;
 
-/* loaded from: classes.dex */
 public class LowStockAdapter extends RecyclerView.Adapter<LowStockAdapter.ViewHolder> {
     private final Context context;
     private final DatabaseHelper dbHelper;
@@ -25,34 +24,34 @@ public class LowStockAdapter extends RecyclerView.Adapter<LowStockAdapter.ViewHo
     }
 
     @NonNull
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_low_stock, viewGroup, false));
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_low_stock, parent, false));
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        LowStockProduct lowStockProduct = this.lowStockProducts.get(i);
-        viewHolder.productName.setText(lowStockProduct.getProductName());
-        viewHolder.productQuantity.setText("Disponible: " + lowStockProduct.getAvailableStock());
-        viewHolder.productSeuil.setText("Seuil: " + lowStockProduct.getSeuilStock());
-        loadProductImage(lowStockProduct.getProductID(), viewHolder.productIcon);
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        LowStockProduct item = lowStockProducts.get(position);
+
+        holder.productName.setText(item.getProductName());
+        holder.productQuantity.setText(item.getAvailableStock() + " pcs");
+        holder.productSeuil.setText("Seuil: " + item.getSeuilStock());
+
+        loadProductImage(item.getProductID(), holder.productIcon);
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override
     public int getItemCount() {
-        return this.lowStockProducts.size();
+        return lowStockProducts.size();
     }
 
-    private void loadProductImage(String str, ImageView imageView) {
-        String productPhotoName = this.dbHelper.getProductPhotoName(str);
-        if (productPhotoName != null && !productPhotoName.isEmpty()) {
-            String absolutePath = new File(this.context.getFilesDir(), "products/" + productPhotoName).getAbsolutePath();
-            if (new File(absolutePath).exists()) {
-                Glide.with(this.context).load(absolutePath).into(imageView);
-                return;
-            } else {
-                imageView.setImageResource(R.drawable.ic_placeholder);
+    private void loadProductImage(String productID, ImageView imageView) {
+        String photoName = dbHelper.getProductPhotoName(productID);
+        if (photoName != null && !photoName.isEmpty()) {
+            File file = new File(context.getFilesDir(), "products/" + photoName);
+            if (file.exists()) {
+                Glide.with(context).load(file.getAbsolutePath()).into(imageView);
                 return;
             }
         }
@@ -65,12 +64,12 @@ public class LowStockAdapter extends RecyclerView.Adapter<LowStockAdapter.ViewHo
         TextView productQuantity;
         TextView productSeuil;
 
-        public ViewHolder(View view) {
-            super(view);
-            this.productIcon = view.findViewById(R.id.imageViewProductIcon);
-            this.productName = view.findViewById(R.id.textViewProductName);
-            this.productQuantity = view.findViewById(R.id.textViewProductQuantity);
-            this.productSeuil = view.findViewById(R.id.textViewProductSeuil);
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            productIcon     = itemView.findViewById(R.id.imageViewProductIcon);
+            productName     = itemView.findViewById(R.id.textViewProductName);
+            productQuantity = itemView.findViewById(R.id.textViewProductQuantity);
+            productSeuil    = itemView.findViewById(R.id.textViewProductSeuil);
         }
     }
 }
