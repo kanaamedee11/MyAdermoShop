@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_workspace"
+        android:icon="@drawable/ic_home_24"
+        android:title="Espace de travail"/>
+
+    <item
+        android:id="@+id/nav_purchase"
+        android:icon="@drawable/ic_stock"
+        android:title="Enregistrer un Achat"/>
+
+    <item
+        android:id="@+id/nav_stock"
+        android:icon="@drawable/ic_stock"
+        android:title="Stock"/>
+
+    <item
+        android:id="@+id/nav_low_stock"
+        android:icon="@drawable/ic_warning"
+        android:title="Faible stock"/>
+
+    <item
+        android:id="@+id/nav_reportitems"
+        android:icon="@drawable/ic_sell"
+        android:title="Reporter des articles"/>
+
+    <item
+        android:id="@+id/nav_dispenses"
+        android:icon="@drawable/ic_dispenses"
+        android:title="Dépenses"/>
+
+    <item
+        android:id="@+id/nav_versements"
+        android:icon="@drawable/ic_control"
+        android:title="Versements"/>
+
+    <item
+        android:id="@+id/nav_physical_controls"
+        android:icon="@drawable/ic_control"
+        android:title="Contrôles Physiques"/>
+
+    <item
+        android:id="@+id/nav_change_password"
+        android:icon="@drawable/ic_lock"
+        android:title="Changer le mot de passe"/>
+
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Paramètres"/>
+
+    <item
+        android:id="@+id/nav_connect_printer"
+        android:icon="@drawable/ic_printer"
+        android:title="Connecter Imprimante"/>
+
+    <item
+        android:id="@+id/nav_barcode_pdfs"
+        android:icon="@drawable/ic_barcode_pdf"
+        android:title="PDF Codes-barres"/>
+
+</menu>

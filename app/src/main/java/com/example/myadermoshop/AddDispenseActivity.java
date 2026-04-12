@@ -1,5 +1,6 @@
 package com.example.myadermoshop;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -90,6 +91,7 @@ public class AddDispenseActivity extends AppCompatActivity {
 
     // ── Data loading ──────────────────────────────────────────────────────────
 
+    @SuppressLint("Range")
     private void loadTypeDispensesIntoSpinner() {
         Cursor cursor = dbHelper.getAllTypeDispenses();
         if (cursor != null && cursor.moveToFirst()) {
@@ -112,6 +114,7 @@ public class AddDispenseActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("Range")
     private void loadPaymentTypesIntoSpinner() {
         Cursor cursor = new DatabaseHelper(this).getAllPaymentTypes();
         if (cursor != null && cursor.moveToFirst()) {
@@ -190,7 +193,11 @@ public class AddDispenseActivity extends AppCompatActivity {
     }
 
     private void saveDispenseImage(Uri uri, String fileName) {
-        new DatabaseHelper(this).saveDispenseImageWithNewName(uri, fileName);
+        try {
+            new DatabaseHelper(this).saveDispenseImageWithNewName(uri, fileName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // ── Generators ───────────────────────────────────────────────────────────

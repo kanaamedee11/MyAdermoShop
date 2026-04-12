@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.util.List;
 
-/* loaded from: classes.dex */
 public class PdfAdapter extends RecyclerView.Adapter<PdfAdapter.PdfViewHolder> {
     private final Context context;
     private final List<PdfFile> pdfFiles;
@@ -24,52 +24,51 @@ public class PdfAdapter extends RecyclerView.Adapter<PdfAdapter.PdfViewHolder> {
         this.pdfFiles = list;
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public PdfViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return new PdfViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_pdf_card, viewGroup, false));
+    @NonNull
+    @Override
+    public PdfViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PdfViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.item_pdf_card, parent, false));
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public void onBindViewHolder(PdfViewHolder pdfViewHolder, int i) {
-        final PdfFile pdfFile = this.pdfFiles.get(i);
-        pdfViewHolder.pdfName.setText(pdfFile.getName());
-        pdfViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m108lambda$onBindViewHolder$0$comexamplemyadermoshopPdfAdapter(pdfFile, view);
-            }
-        });
+    @Override
+    public void onBindViewHolder(@NonNull PdfViewHolder holder, int position) {
+        PdfFile pdfFile = pdfFiles.get(position);
+        holder.pdfName.setText(pdfFile.getName());
+        holder.itemView.setOnClickListener(v ->
+                suggestAppsToOpenPdf(pdfFile.getLocation()));
     }
 
-    private void m108lambda$onBindViewHolder$0$comexamplemyadermoshopPdfAdapter(PdfFile pdfFile, View view) {
-        suggestAppsToOpenPdf(pdfFile.getLocation());
-    }
-
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override
     public int getItemCount() {
-        return this.pdfFiles.size();
+        return pdfFiles.size();
+    }
+
+    private void suggestAppsToOpenPdf(String path) {
+        Uri uri = FileProvider.getUriForFile(
+                context,
+                "com.example.myadermoshop.fileprovider",
+                new File(path));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "application/pdf");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(context,
+                    "Aucune application trouvée pour ouvrir le PDF",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static class PdfViewHolder extends RecyclerView.ViewHolder {
         ImageView pdfIcon;
         TextView pdfName;
 
-        public PdfViewHolder(View view) {
-            super(view);
-            this.pdfName = view.findViewById(R.id.pdf_name);
-            this.pdfIcon = view.findViewById(R.id.pdf_icon);
-        }
-    }
-
-    private void suggestAppsToOpenPdf(String str) {
-        Uri uriForFile = FileProvider.getUriForFile(this.context, "com.example.myadermoshop.fileprovider", new File(str));
-        Intent intent = new Intent("android.intent.action.VIEW");
-        intent.setDataAndType(uriForFile, "application/pdf");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        if (intent.resolveActivity(this.context.getPackageManager()) != null) {
-            this.context.startActivity(intent);
-        } else {
-            Toast.makeText(this.context, "Aucune application trouvée pour ouvrir le PDF", 0).show();
+        public PdfViewHolder(@NonNull View itemView) {
+            super(itemView);
+            pdfName = itemView.findViewById(R.id.pdf_name);
+            pdfIcon = itemView.findViewById(R.id.pdf_icon);
         }
     }
 }
