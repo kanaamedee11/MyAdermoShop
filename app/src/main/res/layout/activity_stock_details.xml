@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_product_placeholder"
+                android:src="@drawable/ic_product_placeholder_x"
                 android:contentDescription="Product Image"/>
 
             <!-- ── Product title + decision badge ── -->
@@ -374,7 +374,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_product_placeholder"
+                    android:src="@drawable/ic_product_placeholder_x"
                     android:contentDescription="Facture Image"/>
             </com.google.android.material.card.MaterialCardView>
 

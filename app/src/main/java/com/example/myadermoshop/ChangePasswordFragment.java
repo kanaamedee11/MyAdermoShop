@@ -1,6 +1,7 @@
 package com.example.myadermoshop;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -57,11 +58,11 @@ public class ChangePasswordFragment extends Fragment {
         existingPassword6 = view.findViewById(R.id.existing_password_6);
         existingPassword7 = view.findViewById(R.id.existing_password_7);
         existingPassword8 = view.findViewById(R.id.existing_password_8);
-        newPassword1                    = view.findViewById(R.id.new_password_1);
-        newPassword2                    = view.findViewById(R.id.new_password_2);
-        validateExistingPasswordButton  = view.findViewById(R.id.validate_existing_password_button);
-        updateButton                    = view.findViewById(R.id.update_button);
-        statusMessage                   = view.findViewById(R.id.status_message);
+        newPassword1                   = view.findViewById(R.id.new_password_1);
+        newPassword2                   = view.findViewById(R.id.new_password_2);
+        validateExistingPasswordButton = view.findViewById(R.id.validate_existing_password_button);
+        updateButton                   = view.findViewById(R.id.update_button);
+        statusMessage                  = view.findViewById(R.id.status_message);
 
         // New password fields and update button locked until existing password validated
         newPassword1.setEnabled(false);
@@ -230,13 +231,13 @@ public class ChangePasswordFragment extends Fragment {
 
     private void showSuccessMessage(String message) {
         statusMessage.setText(message);
-        statusMessage.setTextColor(
-                ContextCompat.getColor(requireActivity(), R.color.ios_green));
+        // ── FIXED: use Color.parseColor() to avoid R.color sync issues ──
+        statusMessage.setTextColor(Color.parseColor("#34C759")); // ios_green
     }
 
     private void showErrorMessage(String message) {
         statusMessage.setText(message);
-        statusMessage.setTextColor(
-                ContextCompat.getColor(requireActivity(), R.color.ios_red));
+        // ── FIXED: use Color.parseColor() to avoid R.color sync issues ──
+        statusMessage.setTextColor(Color.parseColor("#FF3B30")); // ios_red
     }
 }

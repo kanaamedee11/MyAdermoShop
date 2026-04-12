@@ -143,7 +143,8 @@ public class ProductOnCartAdapter
         if (file.exists()) {
             imageView.setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
         } else {
-            imageView.setImageResource(R.drawable.ic_product_placeholder);
+            // Use a built-in Android placeholder — no file needed
+            imageView.setImageResource(android.R.drawable.ic_menu_gallery);
         }
     }
 
@@ -160,14 +161,14 @@ public class ProductOnCartAdapter
 
         public ProductViewHolder(@NonNull View view) {
             super(view);
-            imageViewProduct        = view.findViewById(R.id.imageViewProduct);
-            textViewProductName     = view.findViewById(R.id.textViewProductName);
-            textViewProductPrice    = view.findViewById(R.id.textViewProductPrice);
+            imageViewProduct           = view.findViewById(R.id.imageViewProduct);
+            textViewProductName        = view.findViewById(R.id.textViewProductName);
+            textViewProductPrice       = view.findViewById(R.id.textViewProductPrice);
             textViewProductManufacture = view.findViewById(R.id.textViewProductManufacture);
-            textViewStockManDate    = view.findViewById(R.id.textViewStockManDate);
-            textViewStockExpDate    = view.findViewById(R.id.textViewStockExpDate);
-            textViewProductQuantity = view.findViewById(R.id.textViewProductQuantity);
-            buttonDelete            = view.findViewById(R.id.buttonDelete);
+            textViewStockManDate       = view.findViewById(R.id.textViewStockManDate);
+            textViewStockExpDate       = view.findViewById(R.id.textViewStockExpDate);
+            textViewProductQuantity    = view.findViewById(R.id.textViewProductQuantity);
+            buttonDelete               = view.findViewById(R.id.buttonDelete);
         }
     }
 }

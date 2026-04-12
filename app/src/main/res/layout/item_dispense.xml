@@ -95,7 +95,7 @@
                     android:id="@+id/ivImage"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/ic_product_placeholder"
+                    android:src="@drawable/ic_product_placeholder_x"
                     android:scaleType="centerCrop"/>
             </com.google.android.material.card.MaterialCardView>
 

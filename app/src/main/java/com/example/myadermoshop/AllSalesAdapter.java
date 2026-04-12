@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.HashMap;
@@ -25,22 +26,23 @@ public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.SalesV
 
         public SalesViewHolder(View itemView) {
             super(itemView);
-            textViewCartID = itemView.findViewById(R.id.textViewCartID);
-            textViewCartDate = itemView.findViewById(R.id.textViewCartDate);
+            textViewCartID      = itemView.findViewById(R.id.textViewCartID);
+            textViewCartDate    = itemView.findViewById(R.id.textViewCartDate);
             textViewTotalAmount = itemView.findViewById(R.id.textViewTotalAmount);
             linearLayoutProducts = itemView.findViewById(R.id.linearLayoutProducts);
         }
     }
 
     public AllSalesAdapter(Context context, List<Cart> cartList) {
-        this.context = context;
+        this.context  = context;
         this.cartList = cartList;
     }
 
     @NonNull
     @Override
     public SalesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_sale_simple, parent, false);
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_sale_simple, parent, false);
         return new SalesViewHolder(view);
     }
 
@@ -51,7 +53,8 @@ public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.SalesV
         // Bind header info
         holder.textViewCartID.setText(cart.getCartID());
         holder.textViewCartDate.setText(cart.getTimestamp());
-        holder.textViewTotalAmount.setText(String.format(Locale.getDefault(), "%.2f BIF", cart.getTotalAmount()));
+        holder.textViewTotalAmount.setText(
+                String.format(Locale.getDefault(), "%.2f BIF", cart.getTotalAmount()));
 
         // Clear previous rows
         holder.linearLayoutProducts.removeAllViews();
@@ -76,10 +79,13 @@ public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.SalesV
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setPadding(16, 8, 16, 8);
 
-            TextView tvName = createTextView(item.getProductName(), 2f);
-            TextView tvQty = createTextView(String.valueOf(item.getQuantity()), 1f);
-            TextView tvUnit = createTextView(String.format(Locale.getDefault(), "%.2f", item.getUnitPrice()), 1f);
-            TextView tvTotal = createTextView(String.format(Locale.getDefault(), "%.2f", item.getQuantity() * item.getUnitPrice()), 1f);
+            TextView tvName  = createTextView(item.getProductName(), 2f);
+            TextView tvQty   = createTextView(String.valueOf(item.getQuantity()), 1f);
+            TextView tvUnit  = createTextView(
+                    String.format(Locale.getDefault(), "%.2f", item.getUnitPrice()), 1f);
+            TextView tvTotal = createTextView(
+                    String.format(Locale.getDefault(), "%.2f",
+                            item.getQuantity() * item.getUnitPrice()), 1f);
 
             row.addView(tvName);
             row.addView(tvQty);
@@ -99,8 +105,10 @@ public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.SalesV
         TextView tv = new TextView(context);
         tv.setText(text);
         tv.setTextSize(14);
-        tv.setTextColor(context.getResources().getColor(R.color.ios_label));
-        tv.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
+        // ── FIXED: use ContextCompat instead of deprecated getColor() ──
+        tv.setTextColor(ContextCompat.getColor(context, R.color.ios_black));
+        tv.setLayoutParams(new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
         return tv;
     }
 }

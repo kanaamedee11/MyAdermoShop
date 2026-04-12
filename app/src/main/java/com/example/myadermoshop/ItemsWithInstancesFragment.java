@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-/* loaded from: classes.dex */
 public class ItemsWithInstancesFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int SCAN_BARCODE_REQUEST = 2;
@@ -45,36 +44,28 @@ public class ItemsWithInstancesFragment extends Fragment {
     private Uri selectedImageUri;
     private TextView tvSelectedImage;
 
-    @Override // androidx.fragment.app.Fragment
+    @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         View viewInflate = layoutInflater.inflate(R.layout.fragment_items_with_instances, viewGroup, false);
         this.recyclerViewItemsWithInstances = viewInflate.findViewById(R.id.recyclerViewItemsWithInstances);
         FloatingActionButton floatingActionButton = viewInflate.findViewById(R.id.fab_add_item_with_instance);
         this.recyclerViewItemsWithInstances.setLayoutManager(new LinearLayoutManager(getContext()));
-        this.deterioratedProductWithInstanceList = new ArrayList();
-        DeterioratedProductWithInstanceAdapter deterioratedProductWithInstanceAdapter = new DeterioratedProductWithInstanceAdapter(getContext(), this.deterioratedProductWithInstanceList);
-        this.deterioratedProductWithInstanceAdapter = deterioratedProductWithInstanceAdapter;
-        this.recyclerViewItemsWithInstances.setAdapter(deterioratedProductWithInstanceAdapter);
+        this.deterioratedProductWithInstanceList = new ArrayList<>();
+        this.deterioratedProductWithInstanceAdapter = new DeterioratedProductWithInstanceAdapter(getContext(), this.deterioratedProductWithInstanceList);
+        this.recyclerViewItemsWithInstances.setAdapter(this.deterioratedProductWithInstanceAdapter);
         this.dbHelper = new DatabaseHelper(getContext());
         loadDeterioratedProductsWithInstances();
-        floatingActionButton.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithInstancesFragment$$ExternalSyntheticLambda4
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                this.f$0.m99x4f6adb57(view);
+        
+        floatingActionButton.setOnClickListener(view -> {
+            if (!Utils.checkAndDisplayClosure(getActivity(), dbHelper)) {
+                showAddItemWithInstanceDialog();
             }
         });
+        
         return viewInflate;
     }
 
-    /* renamed from: lambda$onCreateView$0$com-example-myadermoshop-ItemsWithInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m99x4f6adb57(View view) {
-        if (Utils.checkAndDisplayClosure(getActivity(), this.dbHelper)) {
-            return;
-        }
-        showAddItemWithInstanceDialog();
-    }
-
-    @Override // androidx.fragment.app.Fragment
+    @Override
     public void onResume() {
         super.onResume();
         loadDeterioratedProductsWithInstances();
@@ -91,100 +82,76 @@ public class ItemsWithInstancesFragment extends Fragment {
         View viewInflate = getLayoutInflater().inflate(R.layout.dialog_add_item_with_instance, null);
         builder.setView(viewInflate);
         this.etInstanceID = viewInflate.findViewById(R.id.etInstanceID);
-        Button button = viewInflate.findViewById(R.id.btnScanInstance);
+        Button btnScanInstance = viewInflate.findViewById(R.id.btnScanInstance);
         this.etQuantity = viewInflate.findViewById(R.id.etQuantity);
         this.etReason = viewInflate.findViewById(R.id.etReason);
         this.etDeteriorationDate = viewInflate.findViewById(R.id.etDeteriorationDate);
-        Button button2 = viewInflate.findViewById(R.id.btnSelectImage);
+        Button btnSelectImage = viewInflate.findViewById(R.id.btnSelectImage);
         this.tvSelectedImage = viewInflate.findViewById(R.id.tvSelectedImage);
         this.etQuantity.setEnabled(false);
-        button.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithInstancesFragment$$ExternalSyntheticLambda0
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                this.f$0.m101x5e05e898(view);
-            }
+
+        btnScanInstance.setOnClickListener(view -> {
+            startActivityForResult(new Intent(getContext(), BarcodeScannerDeterioretedInstanceActivity.class), SCAN_BARCODE_REQUEST);
         });
-        button2.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithInstancesFragment$$ExternalSyntheticLambda1
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                this.f$0.m102xeb409a19(view);
-            }
+
+        btnSelectImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
+
         setDatePickerDialog(this.etDeteriorationDate);
-        builder.setPositiveButton("Ajouter", new DialogInterface.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithInstancesFragment$$ExternalSyntheticLambda2
-            @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i) throws IOException {
-                this.f$0.m103x787b4b9a(dialogInterface, i);
+
+        builder.setPositiveButton("Ajouter", (dialogInterface, i) -> {
+            try {
+                processAddItemWithInstance();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
-        builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithInstancesFragment$$ExternalSyntheticLambda3
-            @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        builder.setNegativeButton("Annuler", (dialogInterface, i) -> dialogInterface.dismiss());
         builder.create().show();
     }
 
-    /* renamed from: lambda$showAddItemWithInstanceDialog$1$com-example-myadermoshop-ItemsWithInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m101x5e05e898(View view) {
-        startActivityForResult(new Intent(getContext(), BarcodeScannerDeterioretedInstanceActivity.class), 2);
-    }
+    private void processAddItemWithInstance() throws IOException {
+        String instanceID = this.etInstanceID.getText().toString().trim();
+        String qtyStr = this.etQuantity.getText().toString().trim();
+        String reason = this.etReason.getText().toString().trim();
+        String dateStr = this.etDeteriorationDate.getText().toString().trim();
+        String photoName = this.selectedImageUri != null ? generateUniqueFileName() : null;
+        String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String uniqueID = generateUniqueID();
 
-    /* renamed from: lambda$showAddItemWithInstanceDialog$2$com-example-myadermoshop-ItemsWithInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m102xeb409a19(View view) {
-        Intent intent = new Intent("android.intent.action.GET_CONTENT");
-        intent.setType(FileUtils.MIME_TYPE_IMAGE);
-        startActivityForResult(intent, 1);
-    }
-
-    /* renamed from: lambda$showAddItemWithInstanceDialog$3$com-example-myadermoshop-ItemsWithInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m103x787b4b9a(DialogInterface dialogInterface, int i) throws IOException {
-        String strTrim = this.etInstanceID.getText().toString().trim();
-        String strTrim2 = this.etQuantity.getText().toString().trim();
-        String strTrim3 = this.etReason.getText().toString().trim();
-        String strTrim4 = this.etDeteriorationDate.getText().toString().trim();
-        String strGenerateUniqueFileName = this.selectedImageUri != null ? generateUniqueFileName() : null;
-        String str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        String strGenerateUniqueID = generateUniqueID();
-        if (strTrim.isEmpty() || strTrim2.isEmpty() || strTrim4.isEmpty()) {
-            Toast.makeText(getContext(), "Veuillez remplir tous les champs requis", 0).show();
+        if (instanceID.isEmpty() || qtyStr.isEmpty() || dateStr.isEmpty()) {
+            Toast.makeText(getContext(), "Veuillez remplir tous les champs requis", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!this.dbHelper.doesInstanceExist(strTrim)) {
+        if (!this.dbHelper.doesInstanceExist(instanceID)) {
             this.etInstanceID.setError("L'instance n'existe pas.");
-            this.etInstanceID.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             return;
         }
-        Uri uri = this.selectedImageUri;
-        if (uri != null) {
-            saveDeterioratedProductImage(uri, strGenerateUniqueFileName);
-        }
-        if (this.dbHelper.isInstanceSold(strTrim)) {
+        if (this.dbHelper.isInstanceSold(instanceID)) {
             this.etInstanceID.setError("L'instance a déjà été vendue.");
-            this.etInstanceID.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             return;
         }
-        if (this.dbHelper.isInstanceDeteriorated(strTrim)) {
+        if (this.dbHelper.isInstanceDeteriorated(instanceID)) {
             this.etInstanceID.setError("L'instance a déjà été marquée comme détériorée.");
-            this.etInstanceID.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             return;
         }
-        this.etInstanceID.setError(null);
-        this.etInstanceID.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-        this.etQuantity.setText("1");
-        this.etQuantity.setEnabled(false);
-        this.dbHelper.addDeterioratedProductWithInstance(new DeterioratedProductWithInstance(strGenerateUniqueID, strTrim, strTrim4, strTrim3, Integer.parseInt(strTrim2), getLoggedInEmployeeID(), strGenerateUniqueFileName, false, null, str, null, 0));
-        this.dbHelper.updateInstanceState(strTrim, "deteriorated");
+
+        if (this.selectedImageUri != null) {
+            this.dbHelper.saveDeterioratedProductImageWithNewName(this.selectedImageUri, photoName);
+        }
+
+        this.dbHelper.addDeterioratedProductWithInstance(new DeterioratedProductWithInstance(
+                uniqueID, instanceID, dateStr, reason, Integer.parseInt(qtyStr),
+                getLoggedInEmployeeID(), photoName, false, null, now, null, 0));
+        this.dbHelper.updateInstanceState(instanceID, "deteriorated");
         loadDeterioratedProductsWithInstances();
     }
 
     private String getLoggedInEmployeeID() {
         return getActivity() != null ? getActivity().getSharedPreferences("MyApp", 0).getString("employeeID", "") : "";
-    }
-
-    private void saveDeterioratedProductImage(Uri uri, String str) throws IOException {
-        this.dbHelper.saveDeterioratedProductImageWithNewName(uri, str);
     }
 
     private String generateUniqueFileName() {
@@ -196,76 +163,50 @@ public class ItemsWithInstancesFragment extends Fragment {
     }
 
     private void setDatePickerDialog(final EditText editText) {
-        editText.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithInstancesFragment$$ExternalSyntheticLambda6
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                this.f$0.m100xe1a8d309(editText, view);
-            }
+        editText.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            new DatePickerDialog(getContext(), (datePicker, i, i2, i3) -> {
+                editText.setText(i + "-" + (i2 + 1) + "-" + i3);
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
     }
 
-    /* renamed from: lambda$setDatePickerDialog$6$com-example-myadermoshop-ItemsWithInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m100xe1a8d309(final EditText editText, View view) {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() { // from class: com.example.myadermoshop.ItemsWithInstancesFragment$$ExternalSyntheticLambda5
-            @Override // android.app.DatePickerDialog.OnDateSetListener
-            public void onDateSet(DatePicker datePicker, int i, int i2, int i3) {
-                editText.setText(i + "-" + (i2 + 1) + "-" + i3);
-            }
-        }, calendar.get(1), calendar.get(2), calendar.get(5)).show();
-    }
-
     private String getFileNameFromUri(Uri uri) {
-        Cursor cursorQuery = getContext().getContentResolver().query(uri, null, null, null, null);
-        if (cursorQuery != null && cursorQuery.moveToFirst()) {
-            int columnIndex = cursorQuery.getColumnIndex("_display_name");
-            string = columnIndex != -1 ? cursorQuery.getString(columnIndex) : null;
-            cursorQuery.close();
+        String result = null;
+        Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex("_display_name");
+                if (columnIndex != -1) {
+                    result = cursor.getString(columnIndex);
+                }
+            }
+            cursor.close();
         }
-        return string;
+        return result;
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override
     public void onActivityResult(int i, int i2, Intent intent) {
         super.onActivityResult(i, i2, intent);
-        if (i == 1) {
-            getActivity();
-            if (i2 == -1 && intent != null && intent.getData() != null) {
-                Uri data = intent.getData();
-                this.selectedImageUri = data;
-                String fileNameFromUri = getFileNameFromUri(data);
-                TextView textView = this.tvSelectedImage;
-                if (textView != null) {
-                    if (fileNameFromUri == null) {
-                        fileNameFromUri = "Aucune image sélectionnée";
-                    }
-                    textView.setText(fileNameFromUri);
-                    return;
+        if (i == PICK_IMAGE_REQUEST && i2 == -1 && intent != null && intent.getData() != null) {
+            this.selectedImageUri = intent.getData();
+            String fileName = getFileNameFromUri(this.selectedImageUri);
+            if (this.tvSelectedImage != null) {
+                this.tvSelectedImage.setText(fileName != null ? fileName : "Image sélectionnée");
+            }
+        } else if (i == SCAN_BARCODE_REQUEST && i2 == -1 && intent != null) {
+            String result = intent.getStringExtra(Intents.Scan.RESULT);
+            if (this.etInstanceID != null) {
+                this.etInstanceID.setText(result);
+                if (this.dbHelper.isInstanceSold(result)) {
+                    this.etInstanceID.setError("L'instance a déjà été vendue.");
+                } else if (this.dbHelper.isInstanceDeteriorated(result)) {
+                    this.etInstanceID.setError("L'instance a déjà été marquée comme détériorée.");
+                } else {
+                    this.etInstanceID.setError(null);
+                    this.etQuantity.setText("1");
                 }
-                return;
-            }
-        }
-        if (i == 2) {
-            getActivity();
-            if (i2 != -1 || intent == null) {
-                return;
-            }
-            String stringExtra = intent.getStringExtra(Intents.Scan.RESULT);
-            TextInputEditText textInputEditText = this.etInstanceID;
-            if (textInputEditText != null) {
-                textInputEditText.setText(stringExtra);
-            }
-            if (this.dbHelper.isInstanceSold(stringExtra)) {
-                this.etInstanceID.setError("L'instance a déjà été vendue.");
-                this.etInstanceID.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            } else if (this.dbHelper.isInstanceDeteriorated(stringExtra)) {
-                this.etInstanceID.setError("L'instance a déjà été marquée comme détériorée.");
-                this.etInstanceID.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            } else {
-                this.etInstanceID.setError(null);
-                this.etInstanceID.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                this.etQuantity.setText("1");
-                this.etQuantity.setEnabled(false);
             }
         }
     }

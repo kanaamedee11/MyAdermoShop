@@ -51,11 +51,11 @@ public class AddVersementActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        etExpectedAmount = findViewById(R.id.etExpectedAmount);
-        etVersedAmount   = findViewById(R.id.etVersedAmount);
-        etResteAmount    = findViewById(R.id.etResteAmount);
+        etExpectedAmount   = findViewById(R.id.etExpectedAmount);
+        etVersedAmount     = findViewById(R.id.etVersedAmount);
+        etResteAmount      = findViewById(R.id.etResteAmount);
         spinnerPaymentType = findViewById(R.id.spinnerPaymentType);
-        ivSelectedImage  = findViewById(R.id.ivSelectedImage);
+        ivSelectedImage    = findViewById(R.id.ivSelectedImage);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -221,7 +221,8 @@ public class AddVersementActivity extends AppCompatActivity {
         etExpectedAmount.setText(
                 String.format(Locale.getDefault(), "%.2f", calculateAmountAvailableNow()));
         etVersedAmount.setText("");
-        ivSelectedImage.setImageResource(R.drawable.ic_product_placeholder);
+        // ── FIXED: use built-in Android placeholder instead of missing drawable ──
+        ivSelectedImage.setImageResource(android.R.drawable.ic_menu_gallery);
         imageUri = null;
         updateResteAmount();
     }

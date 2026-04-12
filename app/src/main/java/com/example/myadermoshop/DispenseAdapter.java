@@ -74,7 +74,7 @@ public class DispenseAdapter extends RecyclerView.Adapter<DispenseAdapter.ViewHo
                 return;
             }
         }
-        imageView.setImageResource(R.drawable.ic_product_placeholder);
+        imageView.setImageResource(R.drawable.ic_product_placeholder_x);
     }
 
     private String getPaymentTypeLabel(int id) {

@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.myadermoshop"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.myadermoshop"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -34,6 +34,11 @@ android {
     lint {
         abortOnError = false
         disable += "ResourceType"
+    }
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 }
 

@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
@@ -27,12 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-/* loaded from: classes.dex */
 public class ItemsWithoutInstancesFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private DatabaseHelper dbHelper;
@@ -47,31 +44,26 @@ public class ItemsWithoutInstancesFragment extends Fragment {
     private Spinner spinnerProductID;
     private TextView tvSelectedImage;
 
-    @Override // androidx.fragment.app.Fragment
+    @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         View viewInflate = layoutInflater.inflate(R.layout.fragment_items_without_instances, viewGroup, false);
         this.recyclerViewItemsWithoutInstances = viewInflate.findViewById(R.id.recyclerViewItemsWithoutInstances);
         FloatingActionButton floatingActionButton = viewInflate.findViewById(R.id.fab_add_item_without_instance);
         this.recyclerViewItemsWithoutInstances.setLayoutManager(new LinearLayoutManager(getContext()));
-        this.deterioratedProductWithoutInstanceList = new ArrayList();
-        DeterioratedProductWithoutInstanceAdapter deterioratedProductWithoutInstanceAdapter = new DeterioratedProductWithoutInstanceAdapter(getContext(), this.deterioratedProductWithoutInstanceList);
-        this.deterioratedProductWithoutInstanceAdapter = deterioratedProductWithoutInstanceAdapter;
-        this.recyclerViewItemsWithoutInstances.setAdapter(deterioratedProductWithoutInstanceAdapter);
+        this.deterioratedProductWithoutInstanceList = new ArrayList<>();
+        this.deterioratedProductWithoutInstanceAdapter = new DeterioratedProductWithoutInstanceAdapter(getContext(), this.deterioratedProductWithoutInstanceList);
+        this.recyclerViewItemsWithoutInstances.setAdapter(this.deterioratedProductWithoutInstanceAdapter);
         this.dbHelper = new DatabaseHelper(getContext());
         loadDeterioratedProductsWithoutInstances();
-        floatingActionButton.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithoutInstancesFragment.1
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (Utils.checkAndDisplayClosure(ItemsWithoutInstancesFragment.this.getActivity(), ItemsWithoutInstancesFragment.this.dbHelper)) {
-                    return;
-                }
-                ItemsWithoutInstancesFragment.this.showAddItemWithoutInstanceDialog();
+        floatingActionButton.setOnClickListener(view -> {
+            if (!Utils.checkAndDisplayClosure(getActivity(), dbHelper)) {
+                showAddItemWithoutInstanceDialog();
             }
         });
         return viewInflate;
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override
     public void onResume() {
         super.onResume();
         loadDeterioratedProductsWithoutInstances();
@@ -83,8 +75,7 @@ public class ItemsWithoutInstancesFragment extends Fragment {
         this.deterioratedProductWithoutInstanceAdapter.notifyDataSetChanged();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void showAddItemWithoutInstanceDialog() {
+    private void showAddItemWithoutInstanceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View viewInflate = getLayoutInflater().inflate(R.layout.dialog_add_item_without_instance, null);
         builder.setView(viewInflate);
@@ -92,65 +83,60 @@ public class ItemsWithoutInstancesFragment extends Fragment {
         this.etQuantity = viewInflate.findViewById(R.id.etQuantity);
         this.etReason = viewInflate.findViewById(R.id.etReason);
         this.etDeteriorationDate = viewInflate.findViewById(R.id.etDeteriorationDate);
-        Button button = viewInflate.findViewById(R.id.btnSelectImage);
+        Button btnSelectImage = viewInflate.findViewById(R.id.btnSelectImage);
         this.tvSelectedImage = viewInflate.findViewById(R.id.tvSelectedImage);
+        
         this.productList = this.dbHelper.getProductsWithoutInstances();
-        ArrayList arrayList = new ArrayList();
-        Iterator<Product> it = this.productList.iterator();
-        while (it.hasNext()) {
-            arrayList.add(it.next().getProductName());
+        ArrayList<String> productNames = new ArrayList<>();
+        for (Product p : this.productList) {
+            productNames.add(p.getProductName());
         }
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, arrayList);
+        
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, productNames);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.spinnerProductID.setAdapter(arrayAdapter);
-        button.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithoutInstancesFragment$$ExternalSyntheticLambda2
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                this.f$0.m105xca07e589(view);
-            }
+        
+        btnSelectImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
+        
         setDatePickerDialog(this.etDeteriorationDate);
-        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithoutInstancesFragment$$ExternalSyntheticLambda3
-            @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i) throws IOException {
-                this.f$0.m106xcb3e3868(dialogInterface, i);
+        
+        builder.setPositiveButton("Add", (dialogInterface, i) -> {
+            try {
+                processAddItemWithoutInstance();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithoutInstancesFragment$$ExternalSyntheticLambda4
-            @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
         builder.create().show();
     }
 
-    /* renamed from: lambda$showAddItemWithoutInstanceDialog$0$com-example-myadermoshop-ItemsWithoutInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m105xca07e589(View view) {
-        Intent intent = new Intent("android.intent.action.GET_CONTENT");
-        intent.setType(FileUtils.MIME_TYPE_IMAGE);
-        startActivityForResult(intent, 1);
-    }
-
-    /* renamed from: lambda$showAddItemWithoutInstanceDialog$1$com-example-myadermoshop-ItemsWithoutInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m106xcb3e3868(DialogInterface dialogInterface, int i) throws IOException {
+    private void processAddItemWithoutInstance() throws IOException {
+        if (this.productList.isEmpty()) return;
+        
         String productID = this.productList.get(this.spinnerProductID.getSelectedItemPosition()).getProductID();
-        String strTrim = this.etQuantity.getText().toString().trim();
-        String strTrim2 = this.etReason.getText().toString().trim();
-        String strTrim3 = this.etDeteriorationDate.getText().toString().trim();
-        String strGenerateUniqueFileName = this.selectedImageUri != null ? generateUniqueFileName() : null;
-        String str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        String strGenerateUniqueID = generateUniqueID();
-        if (!productID.isEmpty() && !strTrim.isEmpty() && !strTrim3.isEmpty()) {
-            Uri uri = this.selectedImageUri;
-            if (uri != null) {
-                saveDeterioratedProductImage(uri, strGenerateUniqueFileName);
+        String qtyStr = this.etQuantity.getText().toString().trim();
+        String reason = this.etReason.getText().toString().trim();
+        String dateStr = this.etDeteriorationDate.getText().toString().trim();
+        String photoName = this.selectedImageUri != null ? generateUniqueFileName() : null;
+        String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String uniqueID = generateUniqueID();
+        
+        if (!productID.isEmpty() && !qtyStr.isEmpty() && !dateStr.isEmpty()) {
+            if (this.selectedImageUri != null) {
+                this.dbHelper.saveDeterioratedProductImageWithNewName(this.selectedImageUri, photoName);
             }
-            this.dbHelper.addDeterioratedProductWithoutInstance(new DeterioratedProductWithoutInstance(strGenerateUniqueID, productID, strTrim3, strTrim2, Integer.parseInt(strTrim), getLoggedInEmployeeID(), strGenerateUniqueFileName, false, null, str, 0));
+            this.dbHelper.addDeterioratedProductWithoutInstance(new DeterioratedProductWithoutInstance(
+                uniqueID, productID, dateStr, reason, Integer.parseInt(qtyStr), 
+                getLoggedInEmployeeID(), photoName, false, null, now, 0));
             loadDeterioratedProductsWithoutInstances();
-            return;
+        } else {
+            Toast.makeText(getContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(getContext(), "Please fill in all required fields", 0).show();
     }
 
     private void saveDeterioratedProductImage(Uri uri, String str) throws IOException {
@@ -170,52 +156,37 @@ public class ItemsWithoutInstancesFragment extends Fragment {
     }
 
     private void setDatePickerDialog(final TextInputEditText textInputEditText) {
-        textInputEditText.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.ItemsWithoutInstancesFragment$$ExternalSyntheticLambda0
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                this.f$0.m104x49b73d67(textInputEditText, view);
-            }
+        textInputEditText.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            new DatePickerDialog(getContext(), (datePicker, i, i2, i3) -> {
+                textInputEditText.setText(i + "-" + (i2 + 1) + "-" + i3);
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
     }
 
-    /* renamed from: lambda$setDatePickerDialog$4$com-example-myadermoshop-ItemsWithoutInstancesFragment, reason: not valid java name */
-    /* synthetic */ void m104x49b73d67(final TextInputEditText textInputEditText, View view) {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() { // from class: com.example.myadermoshop.ItemsWithoutInstancesFragment$$ExternalSyntheticLambda1
-            @Override // android.app.DatePickerDialog.OnDateSetListener
-            public void onDateSet(DatePicker datePicker, int i, int i2, int i3) {
-                textInputEditText.setText(i + "-" + (i2 + 1) + "-" + i3);
-            }
-        }, calendar.get(1), calendar.get(2), calendar.get(5)).show();
-    }
-
     private String getFileNameFromUri(Uri uri) {
-        Cursor cursorQuery = getContext().getContentResolver().query(uri, null, null, null, null);
-        if (cursorQuery == null || !cursorQuery.moveToFirst()) {
-            return null;
+        String result = null;
+        Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex("_display_name");
+                if (columnIndex != -1) {
+                    result = cursor.getString(columnIndex);
+                }
+            }
+            cursor.close();
         }
-        String string = cursorQuery.getString(cursorQuery.getColumnIndex("_display_name"));
-        cursorQuery.close();
-        return string;
+        return result;
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override
     public void onActivityResult(int i, int i2, Intent intent) {
         super.onActivityResult(i, i2, intent);
-        if (i == 1) {
-            getActivity();
-            if (i2 != -1 || intent == null || intent.getData() == null) {
-                return;
-            }
-            Uri data = intent.getData();
-            this.selectedImageUri = data;
-            String fileNameFromUri = getFileNameFromUri(data);
-            TextView textView = this.tvSelectedImage;
-            if (textView != null) {
-                if (fileNameFromUri == null) {
-                    fileNameFromUri = "No image selected";
-                }
-                textView.setText(fileNameFromUri);
+        if (i == PICK_IMAGE_REQUEST && i2 == -1 && intent != null && intent.getData() != null) {
+            this.selectedImageUri = intent.getData();
+            String fileName = getFileNameFromUri(this.selectedImageUri);
+            if (this.tvSelectedImage != null) {
+                this.tvSelectedImage.setText(fileName != null ? fileName : "No image selected");
             }
         }
     }
