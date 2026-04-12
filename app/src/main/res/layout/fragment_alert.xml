@@ -1,24 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Alert banner — iOS notification style -->
-<com.google.android.material.card.MaterialCardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/alertCard"
+    android:id="@+id/alert_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
-    android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/ios_orange_bg"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="0dp"
-    app:strokeWidth="0dp">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:gravity="center_vertical" android:orientation="horizontal" android:padding="12dp">
-        <ImageView android:id="@+id/alertIcon" android:layout_width="20dp" android:layout_height="20dp"
-            android:layout_marginEnd="10dp" android:src="@drawable/ic_warning" app:tint="@color/ios_orange"/>
-        <TextView android:id="@+id/alertMessage" android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="wrap_content" android:text="Message d'alerte"
-            android:textColor="@color/ios_orange" android:textSize="15sp"/>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    android:layout_marginTop="8dp"
+    android:background="@color/ios_bg2"
+    android:padding="12dp">
+
+    <!-- Left color border -->
+    <View
+        android:id="@+id/left_border"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@color/ios_sep"/>
+
+    <!-- Icon -->
+    <ImageView
+        android:id="@+id/alert_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="12dp"
+        android:contentDescription="@string/alert_icon"/>
+
+    <!-- Message -->
+    <TextView
+        android:id="@+id/alert_message"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:text="Alert message here"
+        android:textColor="@color/ios_label"
+        android:textSize="15sp"/>
+
+</LinearLayout>

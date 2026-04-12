@@ -1,6 +1,7 @@
 package com.example.myadermoshop;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.HashMap;
@@ -26,9 +26,9 @@ public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.SalesV
 
         public SalesViewHolder(View itemView) {
             super(itemView);
-            textViewCartID      = itemView.findViewById(R.id.textViewCartID);
-            textViewCartDate    = itemView.findViewById(R.id.textViewCartDate);
-            textViewTotalAmount = itemView.findViewById(R.id.textViewTotalAmount);
+            textViewCartID       = itemView.findViewById(R.id.textViewCartID);
+            textViewCartDate     = itemView.findViewById(R.id.textViewCartDate);
+            textViewTotalAmount  = itemView.findViewById(R.id.textViewTotalAmount);
             linearLayoutProducts = itemView.findViewById(R.id.linearLayoutProducts);
         }
     }
@@ -105,8 +105,8 @@ public class AllSalesAdapter extends RecyclerView.Adapter<AllSalesAdapter.SalesV
         TextView tv = new TextView(context);
         tv.setText(text);
         tv.setTextSize(14);
-        // ── FIXED: use ContextCompat instead of deprecated getColor() ──
-        tv.setTextColor(ContextCompat.getColor(context, R.color.ios_black));
+        // ── FIXED: Color.parseColor() avoids R.color sync issues ──
+        tv.setTextColor(Color.parseColor("#000000")); // ios_black
         tv.setLayoutParams(new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
         return tv;

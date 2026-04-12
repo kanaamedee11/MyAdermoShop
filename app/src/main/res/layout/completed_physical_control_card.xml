@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -47,14 +48,16 @@
                     android:text="01/11/2024"
                     android:textColor="@color/ios_label2"
                     android:textSize="13sp"/>
+
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/imageViewExpandCollapse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_expand_more"
-                android:contentDescription="Expand/Collapse"/>
+                android:contentDescription="Expand/Collapse"
+                android:src="@drawable/ic_expand_more"/>
+
         </LinearLayout>
 
         <!-- Divider -->
@@ -64,99 +67,49 @@
             android:layout_marginStart="16dp"
             android:background="@color/ios_sep"/>
 
-        <!-- Summary Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Produits contrôlés"
-                android:textColor="@color/ios_label"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:id="@+id/tvProductCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="24"
-                android:textColor="@color/ios_label2"
-                android:textSize="17sp"/>
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:background="@color/ios_sep"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Écarts détectés"
-                android:textColor="@color/ios_label"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:id="@+id/tvDiscrepancies"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2"
-                android:textColor="@color/ios_red"
-                android:textSize="17sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
-
-        <!-- Collapsible Product Table -->
+        <!-- Collapsible product table -->
         <LinearLayout
             android:id="@+id/linearLayoutCollapsible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="12dp"
+            android:paddingBottom="12dp"
             android:visibility="gone">
 
             <TableLayout
                 android:id="@+id/tableLayoutProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="1"
-                android:layout_marginBottom="12dp">
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:stretchColumns="0">
 
-                <!-- Header Row -->
-                <TableRow>
+                <!-- Static header row — data rows inflated by adapter -->
+                <TableRow android:paddingBottom="6dp">
                     <TextView
                         android:text="Nom du Produit"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:textColor="@color/ios_label"/>
+                        android:paddingEnd="12dp"
+                        android:textColor="@color/ios_label2"/>
                     <TextView
                         android:text="Quantité Attendue"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:textColor="@color/ios_label"/>
+                        android:paddingEnd="12dp"
+                        android:textColor="@color/ios_label2"/>
                     <TextView
                         android:text="Quantité Trouvée"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:textColor="@color/ios_label"/>
+                        android:textColor="@color/ios_label2"/>
                 </TableRow>
+
             </TableLayout>
+
         </LinearLayout>
+
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

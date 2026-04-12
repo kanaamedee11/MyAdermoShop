@@ -1,25 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/ios_bg">
-    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:background="@color/ios_nav" app:elevation="0dp">
-        <com.google.android.material.appbar.MaterialToolbar android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" android:background="@color/ios_nav"
-            app:navigationIcon="@drawable/ic_arrow_back" app:navigationIconTint="@color/ios_blue"
-            app:title="Vérification de Clôture" app:titleTextAppearance="@style/T.NavTitle"/>
-        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/ios_sep"/>
-    </com.google.android.material.appbar.AppBarLayout>
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerViewClosure"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:clipToPadding="false" android:paddingBottom="88dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-    <com.google.android.material.button.MaterialButton android:id="@+id/buttonValidate"
-        android:layout_width="match_parent" android:layout_height="50dp"
-        android:layout_gravity="bottom" android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" android:layout_marginBottom="20dp"
-        android:text="Valider la Clôture" android:textColor="@color/ios_btn_text"
-        android:textSize="17sp" android:textStyle="bold" android:stateListAnimator="@null"
-        app:backgroundTint="@color/ios_btn" app:cornerRadius="12dp" app:elevation="0dp"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ios_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="32dp">
+
+        <Space android:layout_width="0dp" android:layout_height="40dp"/>
+
+        <ImageView
+            android:id="@+id/imageViewIcon"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_closure"
+            android:contentDescription="Clôture"/>
+
+        <Space android:layout_width="0dp" android:layout_height="32dp"/>
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clôture Réalisée"
+            android:textColor="@color/ios_label"
+            android:textSize="28sp"
+            android:textStyle="bold"/>
+
+        <Space android:layout_width="0dp" android:layout_height="16dp"/>
+
+        <TextView
+            android:id="@+id/textViewMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Les données de clôture existent pour aujourd'hui. Action non autorisée."
+            android:textColor="@color/ios_label2"
+            android:textSize="17sp"
+            android:textAlignment="center"
+            android:lineSpacingMultiplier="1.4"/>
+
+        <Space android:layout_width="0dp" android:layout_height="40dp"/>
+
+        <!-- RESTORED: old ID -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonOk"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="OK"
+            android:textColor="@color/ios_btn_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@color/ios_btn"
+            app:cornerRadius="12dp"
+            app:elevation="0dp"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

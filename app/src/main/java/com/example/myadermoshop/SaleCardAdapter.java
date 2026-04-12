@@ -2,7 +2,7 @@ package com.example.myadermoshop;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,7 +26,7 @@ public class SaleCardAdapter extends RecyclerView.Adapter<SaleCardAdapter.SaleVi
     private final DatabaseHelper dbHelper;
 
     public SaleCardAdapter(Context context, List<Cart> list) {
-        this.context = context;
+        this.context  = context;
         this.cartList = list;
         this.dbHelper = new DatabaseHelper(context);
     }
@@ -89,17 +88,10 @@ public class SaleCardAdapter extends RecyclerView.Adapter<SaleCardAdapter.SaleVi
 
         double lineTotal = item.getQuantity() * item.getUnitPrice();
 
-        // Product name  (weight 2)
-        row.addView(makeCell(item.getProductName(),   2, false));
-        // Quantity      (weight 1, end-aligned)
-        row.addView(makeCell(
-                formatQty(item.getQuantity()),         1, false));
-        // Unit price    (weight 1, end-aligned)
-        row.addView(makeCell(
-                formatPrice(item.getUnitPrice()),      1, false));
-        // Line total    (weight 1, end-aligned)
-        row.addView(makeCell(
-                formatPrice(lineTotal),                1, false));
+        row.addView(makeCell(item.getProductName(),        2, false));
+        row.addView(makeCell(formatQty(item.getQuantity()), 1, false));
+        row.addView(makeCell(formatPrice(item.getUnitPrice()), 1, false));
+        row.addView(makeCell(formatPrice(lineTotal),        1, false));
 
         return row;
     }
@@ -109,13 +101,13 @@ public class SaleCardAdapter extends RecyclerView.Adapter<SaleCardAdapter.SaleVi
         TextView tv = new TextView(context);
         tv.setText(text);
         tv.setTextSize(13f);
-        tv.setTextColor(ContextCompat.getColor(context, R.color.ios_label));
-        tv.setLayoutParams(new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT, weight));
+        // ── FIXED: Color.parseColor() instead of R.color to avoid sync issues ──
+        tv.setTextColor(Color.parseColor("#000000")); // ios_label
+        tv.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, weight));
         if (bold) {
             tv.setTypeface(null, Typeface.BOLD);
         }
-        // Right-align all columns except the first
         if (weight < 2f) {
             tv.setGravity(android.view.Gravity.END);
         }
@@ -185,12 +177,12 @@ public class SaleCardAdapter extends RecyclerView.Adapter<SaleCardAdapter.SaleVi
 
     // ── ViewHolder ──
     public static class SaleViewHolder extends RecyclerView.ViewHolder {
-        ImageButton imageButtonCancel;
+        ImageButton  imageButtonCancel;
         LinearLayout linearLayoutItems;
-        TextView textViewAmount;
-        TextView textViewCartID;
-        TextView textViewCurrency;
-        TextView textViewTime;
+        TextView     textViewAmount;
+        TextView     textViewCartID;
+        TextView     textViewCurrency;
+        TextView     textViewTime;
 
         public SaleViewHolder(View view) {
             super(view);

@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">My Adermo Shop</string>
     <string name="fab_add_purchase_description">Ajouter un nouvel Achat(Stock)</string>
-
+    <string name="alert_icon">Icône d\'alerte</string>
 </resources>

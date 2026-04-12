@@ -1,48 +1,264 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="340dp" android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/ios_bg2" app:cardCornerRadius="14dp"
-    app:cardElevation="24dp" app:strokeWidth="0dp">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="20dp">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Ajouter un Article (sans instance)" android:textColor="@color/ios_label"
-            android:textSize="20sp" android:textStyle="bold" android:layout_marginBottom="20dp"/>
-        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/ios_bg" app:cardCornerRadius="10dp"
-            app:cardElevation="0dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                    android:gravity="center_vertical" android:orientation="horizontal"
-                    android:paddingStart="16dp" android:paddingEnd="16dp">
-                    <TextView android:layout_width="0dp" android:layout_weight="1"
-                        android:layout_height="wrap_content" android:text="Quantité"
-                        android:textColor="@color/ios_label" android:textSize="17sp"/>
-                    <EditText android:id="@+id/editTextQuantity" android:layout_width="80dp"
-                        android:layout_height="match_parent" android:background="@null"
-                        android:gravity="end" android:hint="0" android:inputType="number"
-                        android:textColor="@color/ios_label" android:textColorHint="@color/ios_placeholder"
+    android:layout_width="340dp"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/ios_bg2"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="24dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Ajouter un Article (sans instance)"
+            android:textColor="@color/ios_label"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <!-- Fields card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/ios_bg"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Product spinner row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Produit"
+                        android:textColor="@color/ios_label"
                         android:textSize="17sp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerProductID"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:spinnerMode="dropdown"/>
+
                 </LinearLayout>
-                <View android:layout_width="match_parent" android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp" android:background="@color/ios_sep"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/ios_sep"/>
+
+                <!-- Quantity row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Quantité"
+                        android:textColor="@color/ios_label"
+                        android:textSize="17sp"/>
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etQuantity"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:gravity="end"
+                        android:hint="0"
+                        android:inputType="number"
+                        android:textColor="@color/ios_label"
+                        android:textColorHint="@color/ios_placeholder"
+                        android:textSize="17sp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/ios_sep"/>
+
+                <!-- Reason row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Raison"
+                        android:textColor="@color/ios_label"
+                        android:textSize="17sp"/>
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etReason"
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:gravity="end"
+                        android:hint="Optionnel"
+                        android:inputType="textMultiLine"
+                        android:textColor="@color/ios_label"
+                        android:textColorHint="@color/ios_placeholder"
+                        android:textSize="17sp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/ios_sep"/>
+
+                <!-- Deterioration date row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Date de détérioration"
+                        android:textColor="@color/ios_label"
+                        android:textSize="17sp"/>
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDeteriorationDate"
+                        android:layout_width="120dp"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:gravity="end"
+                        android:hint="AAAA-MM-JJ"
+                        android:inputType="none"
+                        android:textColor="@color/ios_label"
+                        android:textColorHint="@color/ios_placeholder"
+                        android:textSize="15sp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/ios_sep"/>
+
+                <!-- Image row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:id="@+id/tvSelectedImage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Aucune image"
+                        android:textColor="@color/ios_label2"
+                        android:textSize="14sp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:text="Photo"
+                        android:textColor="@color/ios_blue"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:stateListAnimator="@null"
+                        app:backgroundTint="@color/ios_btn2_bg"
+                        app:cornerRadius="8dp"
+                        app:elevation="0dp"/>
+
+                </LinearLayout>
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <com.google.android.material.button.MaterialButton android:id="@+id/btnCancel"
-                android:layout_width="0dp" android:layout_weight="1" android:layout_height="50dp"
-                android:layout_marginEnd="8dp" android:text="Annuler"
-                android:textColor="@color/ios_blue" android:textSize="17sp" android:textStyle="bold"
-                android:stateListAnimator="@null" app:backgroundTint="@color/ios_btn2_bg"
-                app:cornerRadius="12dp" app:elevation="0dp"/>
-            <com.google.android.material.button.MaterialButton android:id="@+id/btnConfirm"
-                android:layout_width="0dp" android:layout_weight="1" android:layout_height="50dp"
-                android:text="Ajouter" android:textColor="@color/ios_btn_text"
-                android:textSize="17sp" android:textStyle="bold" android:stateListAnimator="@null"
-                app:backgroundTint="@color/ios_btn" app:cornerRadius="12dp" app:elevation="0dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
+                android:text="Annuler"
+                android:textColor="@color/ios_blue"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/ios_btn2_bg"
+                app:cornerRadius="12dp"
+                app:elevation="0dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirm"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="50dp"
+                android:text="Ajouter"
+                android:textColor="@color/ios_btn_text"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/ios_btn"
+                app:cornerRadius="12dp"
+                app:elevation="0dp"/>
+
         </LinearLayout>
+
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

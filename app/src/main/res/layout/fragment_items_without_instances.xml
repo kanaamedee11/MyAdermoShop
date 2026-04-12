@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/ios_nav"
         app:elevation="0dp">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -18,10 +19,12 @@
             app:navigationIconTint="@color/ios_blue"
             app:title="Articles"
             app:titleTextAppearance="@style/T.NavTitle"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/ios_sep"/>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -29,13 +32,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingStart="0dp"
-        android:paddingEnd="0dp"
+        android:paddingTop="12dp"
         android:paddingBottom="88dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-    
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab_add_item_without_instance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
@@ -48,4 +50,5 @@
         app:elevation="4dp"
         app:icon="@drawable/ic_add"
         app:iconTint="@color/ios_btn_text"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

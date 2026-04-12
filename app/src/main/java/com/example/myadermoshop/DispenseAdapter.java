@@ -1,13 +1,13 @@
 package com.example.myadermoshop;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.io.File;
@@ -44,15 +44,13 @@ public class DispenseAdapter extends RecyclerView.Adapter<DispenseAdapter.ViewHo
         holder.tvStatus.setText(dbHelper.getStatusLabel(d.getStatusID()));
         holder.tvPaymentType.setText(getPaymentTypeLabel(d.getPaymentTypeID()));
 
-        // Upload status badge — use project colors, not deprecated getColor(int)
+        // ── FIXED: Color.parseColor() instead of R.color to avoid sync issues ──
         if (d.getUploadStatus() == 1) {
             holder.tvUploadStatus.setText("Téléchargé");
-            holder.tvUploadStatus.setTextColor(
-                    ContextCompat.getColor(context, R.color.ios_green));
+            holder.tvUploadStatus.setTextColor(Color.parseColor("#34C759")); // ios_green
         } else {
             holder.tvUploadStatus.setText("Non téléchargé");
-            holder.tvUploadStatus.setTextColor(
-                    ContextCompat.getColor(context, R.color.ios_red));
+            holder.tvUploadStatus.setTextColor(Color.parseColor("#FF3B30")); // ios_red
         }
 
         loadDispenseImage(d, holder.ivImage);
@@ -74,13 +72,13 @@ public class DispenseAdapter extends RecyclerView.Adapter<DispenseAdapter.ViewHo
                 return;
             }
         }
-        imageView.setImageResource(R.drawable.ic_product_placeholder_x);
+        // ── FIXED: use built-in Android placeholder instead of missing drawable ──
+        imageView.setImageResource(android.R.drawable.ic_menu_gallery);
     }
 
     private String getPaymentTypeLabel(int id) {
-        String label = dbHelper.getStatusLabel(id);  // reuse DB lookup if available
+        String label = dbHelper.getStatusLabel(id);
         if (label != null && !label.isEmpty()) return label;
-        // Fallback for known IDs
         switch (id) {
             case 1:  return "Cash";
             case 2:  return "Crédit";
