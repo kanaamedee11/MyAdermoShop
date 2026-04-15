@@ -7,23 +7,27 @@ import android.util.Log;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-/* loaded from: classes.dex */
 public class SplashActivity extends AppCompatActivity {
-    private static final String TAG = "SplashActivity";
-    private InitializationHelper initializationHelper;
-    private TextView loadingStepsTextView;
-    private SharedPreferences sharedPreferences;
 
-    @Override // androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
-    protected void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+    private static final String TAG = "SplashActivity";
+
+    private InitializationHelper initializationHelper;
+    private TextView             loadingStepsTextView;
+    private SharedPreferences    sharedPreferences;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        this.loadingStepsTextView = findViewById(R.id.loadingStepsTextView);
-        SharedPreferences sharedPreferences = getSharedPreferences("MyApp", 0);
-        this.sharedPreferences = sharedPreferences;
-        String string = sharedPreferences.getString("employeeID", null);
-        Log.d(TAG, "Employee ID retrieved: " + string);
-        if (string == null) {
+
+        // ── FIXED: new XML uses tvLoadingStep, old used loadingStepsTextView ──
+        loadingStepsTextView = findViewById(R.id.tvLoadingStep);
+        sharedPreferences    = getSharedPreferences("MyApp", 0);
+
+        String employeeID = sharedPreferences.getString("employeeID", null);
+        Log.d(TAG, "Employee ID retrieved: " + employeeID);
+
+        if (employeeID == null) {
             redirectToLogin();
         } else {
             startInitialization();
@@ -38,8 +42,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void startInitialization() {
         Log.d(TAG, "Starting initialization...");
-        InitializationHelper initializationHelper = new InitializationHelper(this, this.loadingStepsTextView);
-        this.initializationHelper = initializationHelper;
+        initializationHelper = new InitializationHelper(this, loadingStepsTextView);
         initializationHelper.initialize();
     }
 }

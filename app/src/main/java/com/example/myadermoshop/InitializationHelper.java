@@ -8,568 +8,368 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.TextView;
-import com.example.myadermoshop.DatabaseHelper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/* loaded from: classes.dex */
 public class InitializationHelper {
+
     private static final String TAG = "InitializationHelper";
-    private static final String[] steps = {"Initialisation...", "Vérification du réseau...", "Connexion au serveur...", "Mise à jour des produits...", "Mise à jour des stocks...", "Mise à jour des prix des produits...", "Mise à jour des types de paiement...", "Mise à jour des statuts d'opération...", "Mise à jour des unités de mesure...", "Mise à jour des contrôles physiques...", "Récupération des instances de produits...", "Mise à jour des types de dépenses...", "Mise à jour des dépenses...", "Mise à jour des versements...", "Mise à jour des DTWI...", "Mise à jour des DTWTI...", "Mise à jour des clôtures...", "Mise à jour des paniers...", "Mise à jour des paniers ITWI...", "Mise à jour des paniers ITWTI...", "Mise à jour des paiements...", "Presque terminé..."};
-    private final Context context;
-    private final DatabaseHelper databaseHelper;
-    private final TextView loadingStepsTextView;
+
+    private static final int STEP_CHECK_NETWORK          = 0;
+    private static final int STEP_CHECK_API_KEY          = 1;
+    private static final int STEP_UPDATE_PRODUCTS        = 2;
+    private static final int STEP_UPDATE_STOCKS          = 3;
+    private static final int STEP_UPDATE_PRICES          = 4;
+    private static final int STEP_UPDATE_PAYMENT_TYPES   = 5;
+    private static final int STEP_UPDATE_OP_STATUSES     = 6;
+    private static final int STEP_UPDATE_MEASURE_UNITS   = 7;
+    private static final int STEP_UPDATE_PHYSICAL        = 8;
+    private static final int STEP_FETCH_INSTANCES        = 9;
+    private static final int STEP_UPDATE_TYPE_DISPENSES  = 10;
+    private static final int STEP_UPDATE_DISPENSES       = 11;
+    private static final int STEP_UPDATE_VERSEMENTS      = 12;
+    private static final int STEP_UPDATE_DTWI            = 13;
+    private static final int STEP_UPDATE_DTWTI           = 14;
+    private static final int STEP_UPDATE_CLOSURES        = 15;
+    private static final int STEP_UPDATE_CARTS           = 16;
+    private static final int STEP_UPDATE_CITWI           = 17;
+    private static final int STEP_UPDATE_CITWTI          = 18;
+    private static final int STEP_UPDATE_PAYMENTS        = 19;
+
+    private static final String[] STEP_LABELS = {
+            "Vérification du réseau...",
+            "Connexion au serveur...",
+            "Mise à jour des produits...",
+            "Mise à jour des stocks...",
+            "Mise à jour des prix...",
+            "Mise à jour des types de paiement...",
+            "Mise à jour des statuts d'opération...",
+            "Mise à jour des unités de mesure...",
+            "Mise à jour des contrôles physiques...",
+            "Récupération des instances de produits...",
+            "Mise à jour des types de dépenses...",
+            "Mise à jour des dépenses...",
+            "Mise à jour des versements...",
+            "Mise à jour des DTWI...",
+            "Mise à jour des DTWTI...",
+            "Mise à jour des clôtures...",
+            "Mise à jour des paniers...",
+            "Mise à jour des paniers ITWI...",
+            "Mise à jour des paniers ITWTI...",
+            "Mise à jour des paiements..."
+    };
+
+    private final Context           context;
+    private final DatabaseHelper    databaseHelper;
+    private final TextView          loadingStepsTextView;
     private final SharedPreferences sharedPreferences;
-    private int stepIndex = 0;
+
+    private int     stepIndex         = 0;
     private boolean isServerConnected = false;
 
-    static /* synthetic */ int access$108(InitializationHelper initializationHelper) {
-        int i = initializationHelper.stepIndex;
-        initializationHelper.stepIndex = i + 1;
-        return i;
-    }
-
-    public InitializationHelper(Context context, TextView textView) {
-        this.context = context;
-        this.loadingStepsTextView = textView;
-        this.databaseHelper = new DatabaseHelper(context);
-        this.sharedPreferences = context.getSharedPreferences("MyApp", 0);
+    public InitializationHelper(Context context, TextView loadingStepsTextView) {
+        this.context             = context;
+        this.loadingStepsTextView = loadingStepsTextView;
+        this.databaseHelper       = new DatabaseHelper(context);
+        this.sharedPreferences    = context.getSharedPreferences("MyApp", 0);
     }
 
     public void initialize() {
-        this.stepIndex = 0;
+        stepIndex = 0;
         executeCurrentStep();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void executeCurrentStep() {
-        int i = this.stepIndex;
-        String[] strArr = steps;
-        if (i >= strArr.length) {
+    // ── Core runner ───────────────────────────────────────────────────────────
+
+    private void executeCurrentStep() {
+        if (stepIndex >= STEP_LABELS.length) {
             proceedToMainActivity();
             return;
         }
-        String str = strArr[i];
-        Log.d(TAG, "Executing step: " + str + " (Step Index: " + this.stepIndex + ")");
-        this.loadingStepsTextView.setText(str);
-        int i2 = this.stepIndex;
-        if (i2 == 0) {
-            checkNetwork();
-        } else if (i2 == 1) {
-            checkApiKeyAndConnect();
-        } else {
-            performServerDependentUpdate();
+        String label = STEP_LABELS[stepIndex];
+        Log.d(TAG, "Step " + stepIndex + ": " + label);
+        loadingStepsTextView.setText(label);
+
+        switch (stepIndex) {
+            case STEP_CHECK_NETWORK:  checkNetwork();          break;
+            case STEP_CHECK_API_KEY:  checkApiKeyAndConnect(); break;
+            default:                  performServerDependentUpdate(); break;
         }
     }
 
-    private void performServerDependentUpdate() {
-        if (this.isServerConnected) {
-            switch (this.stepIndex) {
-                case 2:
-                    updateProducts();
-                    break;
-                case 3:
-                    updateStocks();
-                    break;
-                case 4:
-                    updateProductPrices();
-                    break;
-                case 5:
-                    updatePaymentTypes();
-                    break;
-                case 6:
-                    updateOperationStatuses();
-                    break;
-                case 7:
-                    updateMeasurementUnits();
-                    break;
-                case 8:
-                    updatePhysicalControls();
-                    break;
-                case 9:
-                    fetchProductInstances();
-                    break;
-                case 10:
-                    updateTypeDispenses();
-                    break;
-                case 11:
-                    updateDispenses();
-                    break;
-                case 12:
-                    getFromServerVersements();
-                    break;
-                case 13:
-                    getFromServerDeterioratedProductsWithInstance();
-                    break;
-                case 14:
-                    getFromServerDeterioratedProductsWithoutInstance();
-                    break;
-                case 15:
-                    updateFromServerCarts();
-                    break;
-                case 16:
-                    updateFromServerCITWI();
-                    break;
-                case 17:
-                    updateFromServerCITWTI();
-                    break;
-                case 18:
-                    getFromServerClosures();
-                    break;
-                case 19:
-                    getFromServerPayments();
-                    break;
-                default:
-                    proceedToMainActivity();
-                    break;
-            }
-        }
-        Log.d(TAG, "Server not connected. Skipping step " + this.stepIndex);
-        this.stepIndex++;
+    private void nextStep() {
+        stepIndex++;
         executeCurrentStep();
     }
 
+    // ── Network ───────────────────────────────────────────────────────────────
+
     private void checkNetwork() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.context.getSystemService("connectivity");
-        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        if (activeNetworkInfo == null || !activeNetworkInfo.isConnectedOrConnecting()) {
+        ConnectivityManager cm = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm != null ? cm.getActiveNetworkInfo() : null;
+        if (info != null && info.isConnectedOrConnecting()) {
+            Log.d(TAG, "Network connected.");
+            nextStep();
+        } else {
             Log.d(TAG, "No network connection.");
             attemptOfflineMode();
-        } else {
-            Log.d(TAG, "Network connected.");
-            this.stepIndex++;
-            executeCurrentStep();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void attemptOfflineMode() {
-        if (this.sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null) == null) {
-            Log.d(TAG, "No API key found. Redirecting to Login.");
-            redirectToLogin();
-        } else {
-            Log.d(TAG, "Proceeding with offline mode.");
-            proceedWithLocalData();
-        }
-    }
+    // ── API key / server ──────────────────────────────────────────────────────
 
     private void checkApiKeyAndConnect() {
-        if (this.sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null) != null) {
-            Log.d(TAG, "API Key found. Attempting to connect to server...");
-            connectToServer();
-        } else {
-            Log.d(TAG, "API Key not found. Redirecting to Login.");
+        String apiKey = sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null);
+        if (apiKey == null) {
+            Log.d(TAG, "No API key. Redirecting to Login.");
             redirectToLogin();
+        } else {
+            Log.d(TAG, "API key found. Connecting...");
+            connectToServer();
         }
     }
 
     private void connectToServer() {
-        Log.d(TAG, "Attempting to connect to server...");
-        this.databaseHelper.getFromServerStatus(new DatabaseHelper.ServerStatusCallback() { // from class: com.example.myadermoshop.InitializationHelper.1
-            @Override // com.example.myadermoshop.DatabaseHelper.ServerStatusCallback
+        // ── FIXED: uses ServerStatusCallback (not SimpleCallback) ──
+        databaseHelper.getFromServerStatus(new DatabaseHelper.ServerStatusCallback() {
+            @Override
             public void onSuccess() {
-                Log.d(InitializationHelper.TAG, "Successfully connected to server.");
-                InitializationHelper.this.isServerConnected = true;
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
+                Log.d(TAG, "Server connected.");
+                isServerConnected = true;
+                nextStep();
             }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.ServerStatusCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Failed to connect to server: " + str);
-                InitializationHelper.this.attemptOfflineMode();
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, "Server connection failed: " + error);
+                isServerConnected = false;
+                attemptOfflineMode();
             }
         });
     }
 
-    private void proceedWithLocalData() {
-        Log.d(TAG, "Proceeding with local data.");
-        this.isServerConnected = false;
-        this.stepIndex = 2;
-        executeCurrentStep();
+    // ── Offline ───────────────────────────────────────────────────────────────
+
+    private void attemptOfflineMode() {
+        String apiKey = sharedPreferences.getString(DatabaseHelper.COLUMN_API_KEY, null);
+        if (apiKey == null) {
+            redirectToLogin();
+        } else {
+            Log.d(TAG, "Offline mode — using local data.");
+            proceedToMainActivity();
+        }
     }
+
+    // ── Server-dependent steps ────────────────────────────────────────────────
+
+    private void performServerDependentUpdate() {
+        if (!isServerConnected) {
+            Log.d(TAG, "Server not connected. Skipping step " + stepIndex);
+            nextStep();
+            return;
+        }
+        switch (stepIndex) {
+            case STEP_UPDATE_PRODUCTS:       updateProducts();       break;
+            case STEP_UPDATE_STOCKS:         updateStocks();         break;
+            case STEP_UPDATE_PRICES:         updateProductPrices();  break;
+            case STEP_UPDATE_PAYMENT_TYPES:  updatePaymentTypes();   break;
+            case STEP_UPDATE_OP_STATUSES:    updateOperationStatuses(); break;
+            case STEP_UPDATE_MEASURE_UNITS:  updateMeasurementUnits(); break;
+            case STEP_UPDATE_PHYSICAL:       updatePhysicalControls(); break;
+            case STEP_FETCH_INSTANCES:       fetchProductInstances(); break;
+            case STEP_UPDATE_TYPE_DISPENSES: updateTypeDispenses();  break;
+            case STEP_UPDATE_DISPENSES:      updateDispenses();      break;
+            case STEP_UPDATE_VERSEMENTS:     getFromServerVersements(); break;
+            case STEP_UPDATE_DTWI:           getFromServerDeterioratedProductsWithInstance(); break;
+            case STEP_UPDATE_DTWTI:          getFromServerDeterioratedProductsWithoutInstance(); break;
+            case STEP_UPDATE_CLOSURES:       getFromServerClosures(); break;
+            case STEP_UPDATE_CARTS:          updateFromServerCarts(); break;
+            case STEP_UPDATE_CITWI:          updateFromServerCITWI(); break;
+            case STEP_UPDATE_CITWTI:         updateFromServerCITWTI(); break;
+            case STEP_UPDATE_PAYMENTS:       getFromServerPayments(); break;
+            default: proceedToMainActivity(); break;
+        }
+    }
+
+    // ── Individual steps — all use DataUpdateCallback ─────────────────────────
 
     private void updateProducts() {
         Log.d(TAG, "Updating products...");
-        this.databaseHelper.getFromServerProducts(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.2
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Products updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating products: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerProducts(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateProducts: " + e); nextStep(); }
         });
     }
 
     private void updateStocks() {
         Log.d(TAG, "Updating stocks...");
-        this.databaseHelper.getFromServerStocks(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.3
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Stocks updated successfully.");
-                InitializationHelper.this.fetchAllInstancesForStocks();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating stocks: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerStocks(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { fetchAllInstancesForStocks(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateStocks: " + e); nextStep(); }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void fetchAllInstancesForStocks() {
-        this.databaseHelper.fetchAllInstancesForStocks(this.databaseHelper.getAllStockIDs(), new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.4
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "All product instances fetched and saved successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error fetching product instances: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+    private void fetchAllInstancesForStocks() {
+        List<String> stockIDs = databaseHelper.getAllStockIDs();
+        databaseHelper.fetchAllInstancesForStocks(stockIDs, new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "fetchAllInstancesForStocks: " + e); nextStep(); }
         });
     }
 
     private void updateProductPrices() {
         Log.d(TAG, "Updating product prices...");
-        this.databaseHelper.getFromServerProductPrices(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.5
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Product prices updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating product prices: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerProductPrices(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateProductPrices: " + e); nextStep(); }
         });
     }
 
     private void updatePaymentTypes() {
         Log.d(TAG, "Updating payment types...");
-        this.databaseHelper.getFromServerPaymentTypes(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.6
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Payment types updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating payment types: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerPaymentTypes(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updatePaymentTypes: " + e); nextStep(); }
         });
     }
 
     private void updateOperationStatuses() {
         Log.d(TAG, "Updating operation statuses...");
-        this.databaseHelper.getFromServerOperationStatuses(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.7
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Operation statuses updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating operation statuses: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerOperationStatuses(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateOperationStatuses: " + e); nextStep(); }
         });
     }
 
     private void updateMeasurementUnits() {
         Log.d(TAG, "Updating measurement units...");
-        this.databaseHelper.getFromServerMeasurementUnits(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.8
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Measurement units updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating measurement units: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerMeasurementUnits(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateMeasurementUnits: " + e); nextStep(); }
         });
     }
 
     private void updatePhysicalControls() {
         Log.d(TAG, "Updating physical controls...");
-        this.databaseHelper.fetchAndStorePhysicalControls(new DatabaseHelper.PhysicalControlCallback() { // from class: com.example.myadermoshop.InitializationHelper.9
-            @Override // com.example.myadermoshop.DatabaseHelper.PhysicalControlCallback
-            public void onComplete(List<PhysicalControle> list) {
-                Log.d(InitializationHelper.TAG, "Physical controls updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.PhysicalControlCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating physical controls: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        // ── FIXED: uses PhysicalControlCallback (not SimpleCallback) ──
+        databaseHelper.fetchAndStorePhysicalControls(new DatabaseHelper.PhysicalControlCallback() {
+            @Override public void onComplete(List<PhysicalControle> list) { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updatePhysicalControls: " + e); nextStep(); }
         });
     }
 
     private void fetchProductInstances() {
         Log.d(TAG, "Fetching product instances...");
-        this.databaseHelper.fetchAllInstancesForStocks(this.databaseHelper.getAllStockIDs(), new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.10
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Product instances fetched and saved successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error fetching product instances: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        List<String> stockIDs = databaseHelper.getAllStockIDs();
+        databaseHelper.fetchAllInstancesForStocks(stockIDs, new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "fetchProductInstances: " + e); nextStep(); }
         });
     }
 
     private void updateTypeDispenses() {
         Log.d(TAG, "Updating type dispenses...");
-        this.databaseHelper.getFromServerTypeDispenses(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.11
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Type dispenses updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating type dispenses: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerTypeDispenses(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateTypeDispenses: " + e); nextStep(); }
         });
     }
 
     private void updateDispenses() {
         Log.d(TAG, "Updating dispenses...");
-        this.databaseHelper.getFromServerDispenses(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.12
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Dispenses updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating dispenses: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerDispenses(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateDispenses: " + e); nextStep(); }
         });
     }
 
     private void getFromServerVersements() {
         Log.d(TAG, "Updating versements...");
-        this.databaseHelper.getFromServerVersements(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.13
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Versements updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating versements: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerVersements(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "getFromServerVersements: " + e); nextStep(); }
         });
     }
 
     private void getFromServerDeterioratedProductsWithInstance() {
-        Log.d(TAG, "Updating deteriorated products (with instance)...");
-        this.databaseHelper.getFromServerDeterioratedProductsWithInstance(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.14
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Deteriorated products (with instance) updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating deteriorated products (with instance): " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        Log.d(TAG, "Updating DTWI...");
+        databaseHelper.getFromServerDeterioratedProductsWithInstance(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "DTWI: " + e); nextStep(); }
         });
     }
 
     private void getFromServerDeterioratedProductsWithoutInstance() {
-        Log.d(TAG, "Updating deteriorated products (without instance)...");
-        this.databaseHelper.getFromServerDeterioratedProductsWithoutInstance(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.15
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Deteriorated products (without instance) updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating deteriorated products (without instance): " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        Log.d(TAG, "Updating DTWTI...");
+        databaseHelper.getFromServerDeterioratedProductsWithoutInstance(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "DTWTI: " + e); nextStep(); }
         });
     }
 
     private void getFromServerClosures() {
         Log.d(TAG, "Updating closures...");
-        this.databaseHelper.getFromServerClosures(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.16
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Closures updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerClosures(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "getFromServerClosures: " + e); nextStep(); }
+        });
+    }
 
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating closures: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
+    private void updateFromServerCarts() {
+        String lastUpdate = sharedPreferences.getString("lastCartsUpdateDate", null);
+        final String today = new SimpleDateFormat("yyyy-MM-dd",
+                Locale.getDefault()).format(new Date());
+        if (today.equals(lastUpdate)) {
+            Log.d(TAG, "Carts already updated today. Skipping.");
+            nextStep();
+            return;
+        }
+        Log.d(TAG, "Updating carts...");
+        databaseHelper.getFromServerCarts(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() {
+                sharedPreferences.edit().putString("lastCartsUpdateDate", today).apply();
+                nextStep();
             }
+            @Override public void onFailure(String e) { Log.e(TAG, "updateFromServerCarts: " + e); nextStep(); }
         });
     }
 
     private void updateFromServerCITWI() {
         Log.d(TAG, "Updating CITWI...");
-        this.databaseHelper.getFromServerCartItemsWithInstance(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.17
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "CITWI updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating CITWI: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerCartItemsWithInstance(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "CITWI: " + e); nextStep(); }
         });
     }
 
     private void updateFromServerCITWTI() {
         Log.d(TAG, "Updating CITWTI...");
-        this.databaseHelper.getFromServerCartItemsWithoutInstance(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.18
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "CITWTI updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating CITWTI: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerCartItemsWithoutInstance(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "CITWTI: " + e); nextStep(); }
         });
-    }
-
-    private void updateFromServerCarts() {
-        String string = this.sharedPreferences.getString("lastCartsUpdateDate", null);
-        final String str = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        if (str.equals(string)) {
-            Log.d(TAG, "Carts already updated for today.");
-            this.stepIndex++;
-            executeCurrentStep();
-        } else {
-            Log.d(TAG, "Updating Carts...");
-            this.databaseHelper.getFromServerCarts(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.19
-                @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-                public void onComplete() {
-                    Log.d(InitializationHelper.TAG, "Carts updated successfully.");
-                    SharedPreferences.Editor editorEdit = InitializationHelper.this.sharedPreferences.edit();
-                    editorEdit.putString("lastCartsUpdateDate", str);
-                    editorEdit.apply();
-                    InitializationHelper.access$108(InitializationHelper.this);
-                    InitializationHelper.this.executeCurrentStep();
-                }
-
-                @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-                public void onFailure(String str2) {
-                    Log.e(InitializationHelper.TAG, "Error updating Carts: " + str2);
-                    InitializationHelper.access$108(InitializationHelper.this);
-                    InitializationHelper.this.executeCurrentStep();
-                }
-            });
-        }
     }
 
     private void getFromServerPayments() {
         Log.d(TAG, "Updating payments...");
-        this.databaseHelper.getFromServerPayments(new DatabaseHelper.DataUpdateCallback() { // from class: com.example.myadermoshop.InitializationHelper.20
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onComplete() {
-                Log.d(InitializationHelper.TAG, "Payments updated successfully.");
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.DataUpdateCallback
-            public void onFailure(String str) {
-                Log.e(InitializationHelper.TAG, "Error updating payments: " + str);
-                InitializationHelper.access$108(InitializationHelper.this);
-                InitializationHelper.this.executeCurrentStep();
-            }
+        databaseHelper.getFromServerPayments(new DatabaseHelper.DataUpdateCallback() {
+            @Override public void onComplete() { nextStep(); }
+            @Override public void onFailure(String e) { Log.e(TAG, "getFromServerPayments: " + e); nextStep(); }
         });
     }
 
+    // ── Navigation ────────────────────────────────────────────────────────────
+
     private void redirectToLogin() {
-        this.context.startActivity(new Intent(this.context, LoginActivity.class));
-        ((Activity) this.context).finish();
+        context.startActivity(new Intent(context, LoginActivity.class));
+        ((Activity) context).finish();
     }
 
     private void proceedToMainActivity() {
         Log.d(TAG, "Initialization complete. Proceeding to MainActivity.");
-        this.context.startActivity(new Intent(this.context, MainActivity.class));
-        ((Activity) this.context).finish();
+        context.startActivity(new Intent(context, MainActivity.class));
+        ((Activity) context).finish();
     }
 }

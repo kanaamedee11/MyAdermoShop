@@ -5,50 +5,62 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes.dex */
 public class VersementsFragment extends Fragment {
     private DatabaseHelper dbHelper;
     private RecyclerView recyclerViewVersements;
     private VersementAdapter versementAdapter;
     private List<Versement> versementList;
 
-    @Override // androidx.fragment.app.Fragment
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        View viewInflate = layoutInflater.inflate(R.layout.fragment_versements, viewGroup, false);
-        this.recyclerViewVersements = viewInflate.findViewById(R.id.recyclerViewVersements);
-        FloatingActionButton floatingActionButton = viewInflate.findViewById(R.id.fab_add_versement);
-        this.recyclerViewVersements.setLayoutManager(new LinearLayoutManager(getContext()));
-        this.versementList = new ArrayList();
-        this.dbHelper = new DatabaseHelper(getContext());
-        VersementAdapter versementAdapter = new VersementAdapter(getContext(), this.versementList, this.dbHelper);
-        this.versementAdapter = versementAdapter;
-        this.recyclerViewVersements.setAdapter(versementAdapter);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater layoutInflater,
+                             @Nullable ViewGroup viewGroup,
+                             @Nullable Bundle bundle) {
+        View view = layoutInflater.inflate(
+                R.layout.fragment_versements, viewGroup, false);
+
+        recyclerViewVersements =
+                view.findViewById(R.id.recyclerViewVersements);
+
+        ExtendedFloatingActionButton fab =
+                view.findViewById(R.id.fab_add_versement);
+
+        recyclerViewVersements.setLayoutManager(
+                new LinearLayoutManager(getContext()));
+
+        versementList = new ArrayList<>();
+        dbHelper = new DatabaseHelper(getContext());
+        versementAdapter = new VersementAdapter(
+                getContext(), versementList, dbHelper);
+        recyclerViewVersements.setAdapter(versementAdapter);
+
         loadVersements();
-        floatingActionButton.setOnClickListener(new View.OnClickListener() { // from class: com.example.myadermoshop.VersementsFragment.1
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                VersementsFragment.this.startActivity(new Intent(VersementsFragment.this.getContext(), AddVersementActivity.class));
-            }
-        });
-        return viewInflate;
+
+        fab.setOnClickListener(v ->
+                startActivity(new Intent(getContext(),
+                        AddVersementActivity.class)));
+
+        return view;
     }
 
-    @Override // androidx.fragment.app.Fragment
+    @Override
     public void onResume() {
         super.onResume();
         loadVersements();
     }
 
     private void loadVersements() {
-        this.versementList.clear();
-        this.versementList.addAll(this.dbHelper.fetchAllVersementsAsList());
-        this.versementAdapter.notifyDataSetChanged();
+        versementList.clear();
+        versementList.addAll(dbHelper.fetchAllVersementsAsList());
+        versementAdapter.notifyDataSetChanged();
     }
 }

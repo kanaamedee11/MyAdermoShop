@@ -12,18 +12,11 @@
         android:background="@color/ios_nav"
         app:elevation="0dp">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/ios_nav"
-            app:title="Accueil"
-            app:titleTextAppearance="@style/T.NavTitle" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/ios_sep" />
+            android:background="@color/ios_sep"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -39,20 +32,24 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="8dp"
-            android:paddingBottom="88dp" />
+            android:paddingBottom="88dp"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_add_sale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="20dp"
+        android:text="Nouvelle vente"
+        android:textColor="@color/ios_btn_text"
+        android:textSize="17sp"
+        android:textStyle="bold"
         android:contentDescription="Ajouter une vente"
-        app:backgroundTint="@color/ios_blue"
+        app:backgroundTint="@color/ios_btn"
         app:elevation="4dp"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@color/ios_bg2" />
+        app:icon="@drawable/ic_add"
+        app:iconTint="@color/ios_btn_text"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

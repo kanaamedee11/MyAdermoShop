@@ -144,8 +144,11 @@ public class ClosingSummaryAdapter extends RecyclerView.Adapter<ClosingSummaryAd
     }
 
     private String formatDate(String dateStr) {
+        if (dateStr == null) return "";
         try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr);
+            // Determine format based on whether it contains time info
+            String pattern = (dateStr.length() > 10) ? "yyyy-MM-dd HH:mm:ss" : "yyyy-MM-dd";
+            Date date = new SimpleDateFormat(pattern, Locale.getDefault()).parse(dateStr);
             return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
         } catch (Exception e) {
             e.printStackTrace();

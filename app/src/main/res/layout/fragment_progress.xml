@@ -1,17 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/ios_bg">
-    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:background="@color/ios_nav" app:elevation="0dp">
-        <com.google.android.material.appbar.MaterialToolbar android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" android:background="@color/ios_nav"
-            app:title="Progression" app:titleTextAppearance="@style/T.NavTitle"/>
-        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/ios_sep"/>
-    </com.google.android.material.appbar.AppBarLayout>
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerView"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:clipToPadding="false" android:paddingBottom="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    android:layout_width="360dp"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/ios_bg2"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="24dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SYNCHRONISATION"
+                android:textColor="@color/ios_blue"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.04"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Progression de téléchargement"
+                android:textColor="@color/ios_label"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep"/>
+
+        <!-- Step 1: Dépenses -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- RESTORED: old ID -->
+            <ImageView
+                android:id="@+id/ivStep1Status"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="14dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Téléchargement des dépenses"
+                android:textColor="@color/ios_label"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="58dp" android:background="@color/ios_sep"/>
+
+        <!-- Step 2: Versements -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- RESTORED: old ID -->
+            <ImageView
+                android:id="@+id/ivStep2Status"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="14dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Téléchargement des versements"
+                android:textColor="@color/ios_label"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="58dp" android:background="@color/ios_sep"/>
+
+        <!-- Step 3: Détériorés avec instance -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- RESTORED: old ID -->
+            <ImageView
+                android:id="@+id/ivStep3Status"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="14dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Produits détériorés (avec instance)"
+                android:textColor="@color/ios_label"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="58dp" android:background="@color/ios_sep"/>
+
+        <!-- Step 4: Détériorés sans instance -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- RESTORED: old ID -->
+            <ImageView
+                android:id="@+id/ivStep4Status"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="14dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Produits détériorés (sans instance)"
+                android:textColor="@color/ios_label"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="58dp" android:background="@color/ios_sep"/>
+
+        <!-- Step 5: Clôtures -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- RESTORED: old ID -->
+            <ImageView
+                android:id="@+id/ivStep5Status"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="14dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Téléchargement des données de clôture"
+                android:textColor="@color/ios_label"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="58dp" android:background="@color/ios_sep"/>
+
+        <!-- Step 6: Chariots -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- RESTORED: old ID -->
+            <ImageView
+                android:id="@+id/ivStep6Status"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="14dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Téléchargement des chariots quotidiens"
+                android:textColor="@color/ios_label"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="0.5dp"
+            android:layout_marginStart="58dp" android:background="@color/ios_sep"/>
+
+        <!-- Step 7: Paiements -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- RESTORED: old ID -->
+            <ImageView
+                android:id="@+id/ivStep7Status"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="14dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Téléchargement des paiements"
+                android:textColor="@color/ios_label"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/ios_sep"/>
+
+        <!-- RESTORED: old ID btnStartUpload -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartUpload"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Imprimer la clôture"
+            android:textColor="@color/ios_btn_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@color/ios_btn"
+            app:cornerRadius="12dp"
+            app:elevation="0dp"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

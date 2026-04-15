@@ -18,58 +18,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhysicalControlsFragment extends Fragment {
+
     private CompletedPhysicalControlAdapter adapter;
-    private DatabaseHelper databaseHelper;
-    private List<PhysicalControle> physicalControleList;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private DatabaseHelper                  databaseHelper;
+    private List<PhysicalControle>          physicalControleList;
+    private SwipeRefreshLayout              swipeRefreshLayout;
 
     @Override
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        return layoutInflater.inflate(R.layout.fragment_physical_controls, viewGroup, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_physical_controls, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle bundle) {
-        super.onViewCreated(view, bundle);
-        FloatingActionButton floatingActionButton = view.findViewById(R.id.fabAddPhysicalControl);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewPhysicalControls);
-        this.swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        this.databaseHelper = new DatabaseHelper(getContext());
-        
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        FloatingActionButton fabAddPhysicalControl =
+                view.findViewById(R.id.fabAddPhysicalControl);
+        RecyclerView recyclerView =
+                view.findViewById(R.id.recyclerViewPhysicalControls);
+        swipeRefreshLayout =
+                view.findViewById(R.id.swipeRefreshLayout);
+
+        databaseHelper = new DatabaseHelper(getContext());
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        this.physicalControleList = new ArrayList<>();
-        this.adapter = new CompletedPhysicalControlAdapter(getContext(), this.physicalControleList, this.databaseHelper);
-        recyclerView.setAdapter(this.adapter);
-        
+        physicalControleList = new ArrayList<>();
+        adapter = new CompletedPhysicalControlAdapter(
+                getContext(), physicalControleList, databaseHelper);
+        recyclerView.setAdapter(adapter);
+
         loadPhysicalControls();
-        
-        this.swipeRefreshLayout.setOnRefreshListener(this::loadPhysicalControls);
-        
-        floatingActionButton.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), AddPhysicalControlActivity.class));
-        });
+
+        swipeRefreshLayout.setOnRefreshListener(this::loadPhysicalControls);
+
+        fabAddPhysicalControl.setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), AddPhysicalControlActivity.class)));
     }
 
     private void loadPhysicalControls() {
-        if (this.swipeRefreshLayout != null) {
-            this.swipeRefreshLayout.setRefreshing(true);
-        }
-        if (isNetworkAvailable()) {
-            this.databaseHelper.fetchAndStorePhysicalControls(new DatabaseHelper.PhysicalControlCallback() {
-                @Override
-                public void onComplete(List<PhysicalControle> list) {
-                    physicalControleList.clear();
-                    physicalControleList.addAll(list);
-                    adapter.notifyDataSetChanged();
-                    if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
-                }
+        if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(true);
 
-                @Override
-                public void onFailure(String str) {
-                    loadPhysicalControlsFromLocal();
-                    if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
-                }
-            });
+        if (isNetworkAvailable()) {
+            databaseHelper.fetchAndStorePhysicalControls(
+                    new DatabaseHelper.PhysicalControlCallback() {
+                        @Override
+                        public void onComplete(List<PhysicalControle> list) {
+                            physicalControleList.clear();
+                            physicalControleList.addAll(list);
+                            adapter.notifyDataSetChanged();
+                            if (swipeRefreshLayout != null)
+                                swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void onFailure(String error) {
+                            loadPhysicalControlsFromLocal();
+                            if (swipeRefreshLayout != null)
+                                swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
         } else {
             loadPhysicalControlsFromLocal();
             if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
@@ -77,15 +86,16 @@ public class PhysicalControlsFragment extends Fragment {
     }
 
     private void loadPhysicalControlsFromLocal() {
-        this.physicalControleList.clear();
-        this.physicalControleList.addAll(this.databaseHelper.getAllPhysicalControls());
-        this.adapter.notifyDataSetChanged();
+        physicalControleList.clear();
+        physicalControleList.addAll(databaseHelper.getAllPhysicalControls());
+        adapter.notifyDataSetChanged();
     }
 
     private boolean isNetworkAvailable() {
         if (getContext() == null) return false;
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(ConnectivityManager.class);
-        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        ConnectivityManager cm = (ConnectivityManager)
+                getContext().getSystemService(ConnectivityManager.class);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

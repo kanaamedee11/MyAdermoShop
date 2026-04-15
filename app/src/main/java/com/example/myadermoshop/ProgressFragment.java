@@ -9,19 +9,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.fragment.app.DialogFragment;
-import com.example.myadermoshop.DatabaseHelper;
 import com.google.gson.Gson;
 
-/* loaded from: classes.dex */
 public class ProgressFragment extends DialogFragment {
+
+    private static final String TAG                = "ProgressFragment";
+    private static final String ARG_DATE           = "date";
     private static final String ARG_CLOSING_SUMMARY = "closingSummary";
-    private static final String ARG_DATE = "date";
-    private static final String TAG = "ProgressFragment";
-    private Button btnStartUpload;
+
+    private String         date;
     private ClosingSummary closingSummary;
-    private String date;
     private DatabaseHelper dbHelper;
-    private HttpService httpService;
+    private HttpService    httpService;
+
+    private Button    btnStartUpload;
     private ImageView ivStep1Status;
     private ImageView ivStep2Status;
     private ImageView ivStep3Status;
@@ -30,208 +31,227 @@ public class ProgressFragment extends DialogFragment {
     private ImageView ivStep6Status;
     private ImageView ivStep7Status;
 
-    public static ProgressFragment newInstance(String str, ClosingSummary closingSummary) {
-        ProgressFragment progressFragment = new ProgressFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("date", str);
-        bundle.putString(ARG_CLOSING_SUMMARY, new Gson().toJson(closingSummary));
-        progressFragment.setArguments(bundle);
-        return progressFragment;
+    public static ProgressFragment newInstance(String date, ClosingSummary closingSummary) {
+        ProgressFragment fragment = new ProgressFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_DATE, date);
+        args.putString(ARG_CLOSING_SUMMARY, new Gson().toJson(closingSummary));
+        fragment.setArguments(args);
+        return fragment;
     }
 
-    @Override // androidx.fragment.app.Fragment
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: Fragment view is being created.");
-        View viewInflate = layoutInflater.inflate(R.layout.fragment_progress, viewGroup, false);
+        View view = inflater.inflate(R.layout.fragment_progress, container, false);
+
         if (getArguments() != null) {
-            this.date = getArguments().getString("date");
-            this.closingSummary = new Gson().fromJson(getArguments().getString(ARG_CLOSING_SUMMARY), ClosingSummary.class);
-            Log.d(TAG, "onCreateView: Retrieved date " + this.date + " and the closing summary.");
+            date           = getArguments().getString(ARG_DATE);
+            closingSummary = new Gson().fromJson(
+                    getArguments().getString(ARG_CLOSING_SUMMARY), ClosingSummary.class);
+            Log.d(TAG, "onCreateView: Retrieved date " + date + " and the closing summary.");
         }
-        this.ivStep1Status = viewInflate.findViewById(R.id.ivStep1Status);
-        this.ivStep2Status = viewInflate.findViewById(R.id.ivStep2Status);
-        this.ivStep3Status = viewInflate.findViewById(R.id.ivStep3Status);
-        this.ivStep4Status = viewInflate.findViewById(R.id.ivStep4Status);
-        this.ivStep5Status = viewInflate.findViewById(R.id.ivStep5Status);
-        this.ivStep6Status = viewInflate.findViewById(R.id.ivStep6Status);
-        this.ivStep7Status = viewInflate.findViewById(R.id.ivStep7Status);
-        this.btnStartUpload = viewInflate.findViewById(R.id.btnStartUpload);
-        this.dbHelper = new DatabaseHelper(getContext());
-        this.httpService = RetrofitInstance.getHttpService();
+
+        ivStep1Status = view.findViewById(R.id.ivStep1Status);
+        ivStep2Status = view.findViewById(R.id.ivStep2Status);
+        ivStep3Status = view.findViewById(R.id.ivStep3Status);
+        ivStep4Status = view.findViewById(R.id.ivStep4Status);
+        ivStep5Status = view.findViewById(R.id.ivStep5Status);
+        ivStep6Status = view.findViewById(R.id.ivStep6Status);
+        ivStep7Status = view.findViewById(R.id.ivStep7Status);
+        btnStartUpload = view.findViewById(R.id.btnStartUpload);
+
+        dbHelper    = new DatabaseHelper(getContext());
+        httpService = RetrofitInstance.getHttpService();
+
         setInitialRedStatus();
         startUpload();
-        return viewInflate;
+
+        return view;
     }
 
     private void setInitialRedStatus() {
-        this.ivStep1Status.setImageResource(R.drawable.ic_error_red);
-        this.ivStep2Status.setImageResource(R.drawable.ic_error_red);
-        this.ivStep3Status.setImageResource(R.drawable.ic_error_red);
-        this.ivStep4Status.setImageResource(R.drawable.ic_error_red);
-        this.ivStep5Status.setImageResource(R.drawable.ic_error_red);
-        this.ivStep6Status.setImageResource(R.drawable.ic_error_red);
-        this.ivStep7Status.setImageResource(R.drawable.ic_error_red);
+        ivStep1Status.setImageResource(R.drawable.ic_error_red);
+        ivStep2Status.setImageResource(R.drawable.ic_error_red);
+        ivStep3Status.setImageResource(R.drawable.ic_error_red);
+        ivStep4Status.setImageResource(R.drawable.ic_error_red);
+        ivStep5Status.setImageResource(R.drawable.ic_error_red);
+        ivStep6Status.setImageResource(R.drawable.ic_error_red);
+        ivStep7Status.setImageResource(R.drawable.ic_error_red);
     }
 
     private void startUpload() {
-        Log.d(TAG, "startUpload: Beginning upload process for date: " + this.date);
+        Log.d(TAG, "startUpload: Beginning upload process for date: " + date);
         uploadDispenses();
     }
 
     private void uploadDispenses() {
-        Log.d(TAG, "uploadDispenses: Uploading dispenses for date: " + this.date);
-        this.dbHelper.uploadDispensesForDate(this.date, new DatabaseHelper.UploadCallback() { // from class: com.example.myadermoshop.ProgressFragment.1
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onSuccess(String str) {
-                Log.d(ProgressFragment.TAG, "uploadDispenses: onSuccess callback called.");
-                ProgressFragment.this.ivStep1Status.setImageResource(R.drawable.ic_check_green);
-                ProgressFragment.this.uploadVersements();
+        Log.d(TAG, "uploadDispenses: Uploading dispenses for date: " + date);
+        dbHelper.uploadDispensesForDate(date, new DatabaseHelper.UploadCallback() {
+            @Override
+            public void onSuccess(String msg) {
+                Log.d(TAG, "uploadDispenses: onSuccess callback called.");
+                ivStep1Status.setImageResource(R.drawable.ic_check_green);
+                uploadVersements();
             }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onFailure(String str) {
-                ProgressFragment.this.ivStep1Status.setImageResource(R.drawable.ic_error_red);
-                Toast.makeText(ProgressFragment.this.getContext(), "Échec du téléchargement des dispensations: " + str, 0).show();
-                Log.e(ProgressFragment.TAG, "uploadDispenses: Error uploading dispensations: " + str);
-                ProgressFragment.this.uploadVersements();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void uploadVersements() {
-        Log.d(TAG, "uploadVersements: Uploading versements for date: " + this.date);
-        this.dbHelper.uploadVersementsForDate(this.date, new DatabaseHelper.UploadCallback() { // from class: com.example.myadermoshop.ProgressFragment.2
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onSuccess(String str) {
-                ProgressFragment.this.ivStep2Status.setImageResource(R.drawable.ic_check_green);
-                Log.d(ProgressFragment.TAG, "uploadVersements: Versements uploaded successfully.");
-                ProgressFragment.this.uploadDeterioratedProductsWithInstance();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onFailure(String str) {
-                ProgressFragment.this.ivStep2Status.setImageResource(R.drawable.ic_error_red);
-                Toast.makeText(ProgressFragment.this.getContext(), "Échec du téléchargement des versements: " + str, 0).show();
-                Log.e(ProgressFragment.TAG, "uploadVersements: Error uploading versements: " + str);
-                ProgressFragment.this.uploadDeterioratedProductsWithInstance();
+            @Override
+            public void onFailure(String msg) {
+                ivStep1Status.setImageResource(R.drawable.ic_error_red);
+                Toast.makeText(getContext(),
+                        "Échec du téléchargement des dispensations: " + msg,
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "uploadDispenses: Error: " + msg);
+                uploadVersements();
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void uploadDeterioratedProductsWithInstance() {
-        Log.d(TAG, "uploadDeterioratedProductsWithInstance: Uploading détériorés (avec instance) for date: " + this.date);
-        this.dbHelper.uploadDeterioratedProductsWithInstanceForDate(this.date, new DatabaseHelper.UploadCallback() { // from class: com.example.myadermoshop.ProgressFragment.3
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onSuccess(String str) {
-                ProgressFragment.this.ivStep3Status.setImageResource(R.drawable.ic_check_green);
-                Log.d(ProgressFragment.TAG, "uploadDeterioratedProductsWithInstance: Products uploaded successfully.");
-                ProgressFragment.this.uploadDeterioratedProductsWithoutInstance();
+    private void uploadVersements() {
+        Log.d(TAG, "uploadVersements: Uploading versements for date: " + date);
+        dbHelper.uploadVersementsForDate(date, new DatabaseHelper.UploadCallback() {
+            @Override
+            public void onSuccess(String msg) {
+                ivStep2Status.setImageResource(R.drawable.ic_check_green);
+                Log.d(TAG, "uploadVersements: Success.");
+                uploadDeterioratedProductsWithInstance();
             }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onFailure(String str) {
-                ProgressFragment.this.ivStep3Status.setImageResource(R.drawable.ic_error_red);
-                Toast.makeText(ProgressFragment.this.getContext(), "Échec du téléchargement des produits détériorés (avec instance): " + str, 0).show();
-                Log.e(ProgressFragment.TAG, "uploadDeterioratedProductsWithInstance: Error uploading products: " + str);
-                ProgressFragment.this.uploadDeterioratedProductsWithoutInstance();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void uploadDeterioratedProductsWithoutInstance() {
-        Log.d(TAG, "uploadDeterioratedProductsWithoutInstance: Uploading détériorés (sans instance) for date: " + this.date);
-        this.dbHelper.uploadDeterioratedProductsWithoutInstanceForDate(this.date, new DatabaseHelper.UploadCallback() { // from class: com.example.myadermoshop.ProgressFragment.4
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onSuccess(String str) {
-                ProgressFragment.this.ivStep4Status.setImageResource(R.drawable.ic_check_green);
-                Log.d(ProgressFragment.TAG, "uploadDeterioratedProductsWithoutInstance: Products uploaded successfully.");
-                ProgressFragment.this.uploadClosureData();
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onFailure(String str) {
-                ProgressFragment.this.ivStep4Status.setImageResource(R.drawable.ic_error_red);
-                Toast.makeText(ProgressFragment.this.getContext(), "Échec du téléchargement des produits détériorés (sans instance): " + str, 0).show();
-                Log.e(ProgressFragment.TAG, "uploadDeterioratedProductsWithoutInstance: Error uploading products: " + str);
-                ProgressFragment.this.uploadClosureData();
+            @Override
+            public void onFailure(String msg) {
+                ivStep2Status.setImageResource(R.drawable.ic_error_red);
+                Toast.makeText(getContext(),
+                        "Échec du téléchargement des versements: " + msg,
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "uploadVersements: Error: " + msg);
+                uploadDeterioratedProductsWithInstance();
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void uploadClosureData() {
-        Log.d(TAG, "uploadClosureData: Uploading closure data for date: " + this.date);
-        this.dbHelper.uploadClosureData(this.httpService, createClosureDataFromSummary(this.closingSummary), new DatabaseHelper.UploadCallback() { // from class: com.example.myadermoshop.ProgressFragment.5
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onSuccess(String str) {
-                ProgressFragment.this.ivStep5Status.setImageResource(R.drawable.ic_check_green);
-                Log.d(ProgressFragment.TAG, "uploadClosureData: Closure data uploaded successfully.");
-                ProgressFragment.this.uploadCarts();
-            }
+    private void uploadDeterioratedProductsWithInstance() {
+        Log.d(TAG, "uploadDeterioratedProductsWithInstance: Uploading for date: " + date);
+        dbHelper.uploadDeterioratedProductsWithInstanceForDate(date,
+                new DatabaseHelper.UploadCallback() {
+                    @Override
+                    public void onSuccess(String msg) {
+                        ivStep3Status.setImageResource(R.drawable.ic_check_green);
+                        Log.d(TAG, "uploadDeterioratedProductsWithInstance: Success.");
+                        uploadDeterioratedProductsWithoutInstance();
+                    }
+                    @Override
+                    public void onFailure(String msg) {
+                        ivStep3Status.setImageResource(R.drawable.ic_error_red);
+                        Toast.makeText(getContext(),
+                                "Échec des produits détériorés (avec instance): " + msg,
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "uploadDeterioratedProductsWithInstance: Error: " + msg);
+                        uploadDeterioratedProductsWithoutInstance();
+                    }
+                });
+    }
 
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onFailure(String str) {
-                ProgressFragment.this.ivStep5Status.setImageResource(R.drawable.ic_error_red);
-                Toast.makeText(ProgressFragment.this.getContext(), "Échec du téléchargement des données de clôture: " + str, 0).show();
-                Log.e(ProgressFragment.TAG, "uploadClosureData: Error uploading closure data: " + str);
-                ProgressFragment.this.uploadCarts();
+    private void uploadDeterioratedProductsWithoutInstance() {
+        Log.d(TAG, "uploadDeterioratedProductsWithoutInstance: Uploading for date: " + date);
+        dbHelper.uploadDeterioratedProductsWithoutInstanceForDate(date,
+                new DatabaseHelper.UploadCallback() {
+                    @Override
+                    public void onSuccess(String msg) {
+                        ivStep4Status.setImageResource(R.drawable.ic_check_green);
+                        Log.d(TAG, "uploadDeterioratedProductsWithoutInstance: Success.");
+                        uploadClosureData();
+                    }
+                    @Override
+                    public void onFailure(String msg) {
+                        ivStep4Status.setImageResource(R.drawable.ic_error_red);
+                        Toast.makeText(getContext(),
+                                "Échec des produits détériorés (sans instance): " + msg,
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "uploadDeterioratedProductsWithoutInstance: Error: " + msg);
+                        uploadClosureData();
+                    }
+                });
+    }
+
+    private void uploadClosureData() {
+        Log.d(TAG, "uploadClosureData: Uploading closure data for date: " + date);
+        dbHelper.uploadClosureData(httpService,
+                createClosureDataFromSummary(closingSummary),
+                new DatabaseHelper.UploadCallback() {
+                    @Override
+                    public void onSuccess(String msg) {
+                        ivStep5Status.setImageResource(R.drawable.ic_check_green);
+                        Log.d(TAG, "uploadClosureData: Success.");
+                        uploadCarts();
+                    }
+                    @Override
+                    public void onFailure(String msg) {
+                        ivStep5Status.setImageResource(R.drawable.ic_error_red);
+                        Toast.makeText(getContext(),
+                                "Échec des données de clôture: " + msg,
+                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "uploadClosureData: Error: " + msg);
+                        uploadCarts();
+                    }
+                });
+    }
+
+    private void uploadCarts() {
+        Log.d(TAG, "uploadCarts: Uploading daily carts for date: " + date);
+        dbHelper.uploadCartsForDate(date, httpService, new DatabaseHelper.UploadCallback() {
+            @Override
+            public void onSuccess(String msg) {
+                ivStep6Status.setImageResource(R.drawable.ic_check_green);
+                Log.d(TAG, "uploadCarts: Success for date: " + date);
+                uploadPayments();
+            }
+            @Override
+            public void onFailure(String msg) {
+                ivStep6Status.setImageResource(R.drawable.ic_error_red);
+                Toast.makeText(getContext(),
+                        "Échec des chariots quotidiens: " + msg,
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "uploadCarts: Error: " + msg);
+                uploadPayments();
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void uploadCarts() {
-        Log.d(TAG, "uploadCarts: Uploading daily carts for date: " + this.date);
-        this.dbHelper.uploadCartsForDate(this.date, this.httpService, new DatabaseHelper.UploadCallback() { // from class: com.example.myadermoshop.ProgressFragment.6
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onSuccess(String str) {
-                ProgressFragment.this.ivStep6Status.setImageResource(R.drawable.ic_check_green);
-                Log.d(ProgressFragment.TAG, "uploadCarts: Daily carts uploaded successfully for date: " + ProgressFragment.this.date);
-                ProgressFragment.this.uploadPayments();
+    private void uploadPayments() {
+        Log.d(TAG, "uploadPayments: Uploading payments for date: " + date);
+        dbHelper.uploadPaymentsForDate(date, httpService, new DatabaseHelper.UploadCallback() {
+            @Override
+            public void onSuccess(String msg) {
+                ivStep7Status.setImageResource(R.drawable.ic_check_green);
+                Toast.makeText(getContext(),
+                        "Tous les paiements ont été téléchargés avec succès!",
+                        Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "uploadPayments: Success for date: " + date);
             }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onFailure(String str) {
-                ProgressFragment.this.ivStep6Status.setImageResource(R.drawable.ic_error_red);
-                Toast.makeText(ProgressFragment.this.getContext(), "Échec du téléchargement des chariots quotidiens: " + str, 0).show();
-                Log.e(ProgressFragment.TAG, "uploadCarts: Error uploading daily carts: " + str);
-                ProgressFragment.this.uploadPayments();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void uploadPayments() {
-        Log.d(TAG, "uploadPayments: Uploading payments for date: " + this.date);
-        this.dbHelper.uploadPaymentsForDate(this.date, this.httpService, new DatabaseHelper.UploadCallback() { // from class: com.example.myadermoshop.ProgressFragment.7
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onSuccess(String str) {
-                ProgressFragment.this.ivStep7Status.setImageResource(R.drawable.ic_check_green);
-                Toast.makeText(ProgressFragment.this.getContext(), "Tous les paiements ont été téléchargés avec succès!", 0).show();
-                Log.d(ProgressFragment.TAG, "uploadPayments: Payments uploaded successfully for date: " + ProgressFragment.this.date);
-            }
-
-            @Override // com.example.myadermoshop.DatabaseHelper.UploadCallback
-            public void onFailure(String str) {
-                ProgressFragment.this.ivStep7Status.setImageResource(R.drawable.ic_error_red);
-                Toast.makeText(ProgressFragment.this.getContext(), "Échec du téléchargement des paiements: " + str, 0).show();
-                Log.e(ProgressFragment.TAG, "uploadPayments: Error uploading payments: " + str);
+            @Override
+            public void onFailure(String msg) {
+                ivStep7Status.setImageResource(R.drawable.ic_error_red);
+                Toast.makeText(getContext(),
+                        "Échec du téléchargement des paiements: " + msg,
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "uploadPayments: Error: " + msg);
             }
         });
     }
 
-    private ClosureData createClosureDataFromSummary(ClosingSummary closingSummary) {
-        double totalSales = this.dbHelper.getTotalSales(this.date);
-        double amountInStock = this.dbHelper.getAmountInStock(this.date);
-        double amountInExpenses = this.dbHelper.getAmountInExpenses(this.date);
-        double versementDeposit = this.dbHelper.getVersementDeposit(this.date);
-        return new ClosureData(closingSummary.getDate(), this.date, totalSales, amountInStock, 1, getLoggedInEmployeeID(), this.dbHelper.getTotalStocksMade(this.date), amountInExpenses, versementDeposit);
+    private ClosureData createClosureDataFromSummary(ClosingSummary summary) {
+        double totalSales       = dbHelper.getTotalSales(date);
+        double amountInStock    = dbHelper.getAmountInStock(date);
+        double amountInExpenses = dbHelper.getAmountInExpenses(date);
+        double versementDeposit = dbHelper.getVersementDeposit(date);
+        int    totalStocks      = dbHelper.getTotalStocksMade(date);
+        return new ClosureData(summary.getDate(), date, totalSales, amountInStock,
+                1, getLoggedInEmployeeID(), totalStocks, amountInExpenses, versementDeposit);
     }
 
     private String getLoggedInEmployeeID() {
-        return getActivity() != null ? getActivity().getSharedPreferences("MyApp", 0).getString("employeeID", "") : "";
+        return getActivity() != null
+                ? getActivity().getSharedPreferences("MyApp", 0)
+                .getString("employeeID", "")
+                : "";
     }
 }

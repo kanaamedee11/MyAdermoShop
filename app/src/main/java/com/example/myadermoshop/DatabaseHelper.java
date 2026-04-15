@@ -2386,6 +2386,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String lastControl = getLastControlDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Calendar cal = Calendar.getInstance();
+
+        // If no last control date exists (first run / empty DB), start from today
+        if (lastControl == null || lastControl.isEmpty()) {
+            dates.add(sdf.format(cal.getTime()));
+            return dates;
+        }
+
         try {
             cal.setTime(sdf.parse(lastControl));
             while (!cal.getTime().after(new Date())) {

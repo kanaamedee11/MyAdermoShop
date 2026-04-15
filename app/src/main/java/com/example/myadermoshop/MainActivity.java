@@ -14,13 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
 import com.google.android.material.navigation.NavigationView;
 import java.io.File;
 
@@ -74,11 +75,15 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (bundle == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new WorkspaceFragment())
-                    .commit();
+            replaceFragment(new WorkspaceFragment());
             navigationView.setCheckedItem(R.id.nav_workspace);
         }
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
     }
 
     @Override
@@ -96,43 +101,46 @@ public class MainActivity extends AppCompatActivity
                 .setTitle("Quitter l'application")
                 .setMessage("Êtes-vous sûr de vouloir quitter l'application ?")
                 .setPositiveButton("Oui", (dialog, which) ->
-                        MainActivity.super.onBackPressed())
+                        finish())
                 .setNegativeButton("Non", null)
                 .show();
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
+        Fragment fragment = null;
 
         if (id == R.id.nav_workspace) {
-            ft.replace(R.id.container, new WorkspaceFragment());
+            fragment = new WorkspaceFragment();
         } else if (id == R.id.nav_purchase) {
-            ft.replace(R.id.container, new PurchaseFragment());
+            fragment = new PurchaseFragment();
         } else if (id == R.id.nav_stock) {
-            ft.replace(R.id.container, new StockFragment());
+            fragment = new StockFragment();
         } else if (id == R.id.nav_low_stock) {
-            ft.replace(R.id.container, new LowStockFragment());
+            fragment = new LowStockFragment();
         } else if (id == R.id.nav_reportitems) {
-            ft.replace(R.id.container, new ReportItemsTabFragment());
+            fragment = new ReportItemsTabFragment();
         } else if (id == R.id.nav_dispenses) {
-            ft.replace(R.id.container, new DispensesFragment());
+            fragment = new DispensesFragment();
         } else if (id == R.id.nav_versements) {
-            ft.replace(R.id.container, new VersementsFragment());
+            fragment = new VersementsFragment();
         } else if (id == R.id.nav_physical_controls) {
-            ft.replace(R.id.container, new PhysicalControlsFragment());
+            fragment = new PhysicalControlsFragment();
         } else if (id == R.id.nav_change_password) {
-            ft.replace(R.id.container, new ChangePasswordFragment());
+            fragment = new ChangePasswordFragment();
         } else if (id == R.id.nav_settings) {
-            ft.replace(R.id.container, new SettingsFragment());
+            fragment = new SettingsFragment();
         } else if (id == R.id.nav_connect_printer) {
-            ft.replace(R.id.container, new PrinterConnectionFragment());
+            fragment = new PrinterConnectionFragment();
         } else if (id == R.id.nav_barcode_pdfs) {
-            ft.replace(R.id.container, new PdfListFragment());
+            fragment = new PdfListFragment();
         }
 
-        ft.commit();
+        if (fragment != null) {
+            replaceFragment(fragment);
+        }
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -140,13 +148,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPrinterSelected(BluetoothDevice bluetoothDevice) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         Log.d(TAG, "Printer selected: " + bluetoothDevice.getName());

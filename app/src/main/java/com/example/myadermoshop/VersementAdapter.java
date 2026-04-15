@@ -12,62 +12,64 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.util.List;
 
-/* loaded from: classes.dex */
 public class VersementAdapter extends RecyclerView.Adapter<VersementAdapter.ViewHolder> {
     private final Context context;
     private final DatabaseHelper dbHelper;
     private final List<Versement> versementList;
 
-    public VersementAdapter(Context context, List<Versement> list, DatabaseHelper databaseHelper) {
+    public VersementAdapter(Context context, List<Versement> list,
+                            DatabaseHelper databaseHelper) {
         this.context = context;
         this.versementList = list;
         this.dbHelper = databaseHelper;
     }
 
     @NonNull
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_versement, viewGroup, false));
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.item_versement, parent, false));
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        Versement versement = this.versementList.get(i);
-        viewHolder.tvExpectedAmount.setText(String.valueOf(versement.getExpectedAmount()));
-        viewHolder.tvVersedAmount.setText(String.valueOf(versement.getVersedAmount()));
-        viewHolder.tvDate.setText(versement.getVersementDateTime());
-        viewHolder.tvStatus.setText(this.dbHelper.getStatusLabel(versement.getStatusID()));
-        double versedAmount = versement.getVersedAmount() - versement.getExpectedAmount();
-        viewHolder.tvRest.setText(String.valueOf(versedAmount));
-        if (versedAmount < 0.0d) {
-            viewHolder.tvRest.setTextColor(this.context.getResources().getColor(android.R.color.holo_red_dark));
-        } else {
-            viewHolder.tvRest.setTextColor(this.context.getResources().getColor(android.R.color.holo_green_dark));
-        }
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Versement versement = versementList.get(position);
+
+        holder.tvDate.setText(versement.getVersementDateTime());
+        holder.tvExpectedAmount.setText(String.valueOf(versement.getExpectedAmount()));
+        holder.tvVersedAmount.setText(String.valueOf(versement.getVersedAmount()));
+        holder.tvStatus.setText(dbHelper.getStatusLabel(versement.getStatusID()));
+
+        double rest = versement.getVersedAmount() - versement.getExpectedAmount();
+        holder.tvRest.setText(String.valueOf(rest));
+        holder.tvRest.setTextColor(context.getResources().getColor(
+                rest < 0.0d ? R.color.ios_red : R.color.ios_green));
+
         if (versement.getUploadStatus() == 1) {
-            viewHolder.tvUploadStatus.setText("Téléchargé");
-            viewHolder.tvUploadStatus.setTextColor(this.context.getResources().getColor(android.R.color.holo_green_light));
+            holder.tvUploadStatus.setText("Téléchargé");
+            holder.tvUploadStatus.setTextColor(
+                    context.getResources().getColor(R.color.ios_green));
         } else {
-            viewHolder.tvUploadStatus.setText("Pas encore téléchargé");
-            viewHolder.tvUploadStatus.setTextColor(this.context.getResources().getColor(android.R.color.holo_orange_light));
+            holder.tvUploadStatus.setText("Pas encore téléchargé");
+            holder.tvUploadStatus.setTextColor(
+                    context.getResources().getColor(R.color.ios_orange));
         }
-        loadVersementImage(versement, viewHolder.ivImage);
+
+        loadVersementImage(versement, holder.ivImage);
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override
     public int getItemCount() {
-        return this.versementList.size();
+        return versementList.size();
     }
 
     private void loadVersementImage(Versement versement, ImageView imageView) {
-        String versementPictureName = versement.getVersementPictureName();
-        if (versementPictureName != null && !versementPictureName.isEmpty()) {
-            String absolutePath = new File(this.context.getFilesDir(), "versements/" + versementPictureName).getAbsolutePath();
-            if (new File(absolutePath).exists()) {
-                Glide.with(this.context).load(absolutePath).into(imageView);
-                return;
-            } else {
-                imageView.setImageResource(R.drawable.ic_placeholder);
+        String pictureName = versement.getVersementPictureName();
+        if (pictureName != null && !pictureName.isEmpty()) {
+            File file = new File(context.getFilesDir(),
+                    "versements/" + pictureName);
+            if (file.exists()) {
+                Glide.with(context).load(file.getAbsolutePath()).into(imageView);
                 return;
             }
         }
@@ -78,20 +80,20 @@ public class VersementAdapter extends RecyclerView.Adapter<VersementAdapter.View
         ImageView ivImage;
         TextView tvDate;
         TextView tvExpectedAmount;
+        TextView tvVersedAmount;
         TextView tvRest;
         TextView tvStatus;
         TextView tvUploadStatus;
-        TextView tvVersedAmount;
 
-        public ViewHolder(View view) {
-            super(view);
-            this.ivImage = view.findViewById(R.id.ivImage);
-            this.tvExpectedAmount = view.findViewById(R.id.tvExpectedAmount);
-            this.tvVersedAmount = view.findViewById(R.id.tvVersedAmount);
-            this.tvRest = view.findViewById(R.id.tvRest);
-            this.tvUploadStatus = view.findViewById(R.id.tvUploadStatus);
-            this.tvDate = view.findViewById(R.id.tvDate);
-            this.tvStatus = view.findViewById(R.id.tvStatus);
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ivImage          = itemView.findViewById(R.id.ivImage);
+            tvDate           = itemView.findViewById(R.id.tvDate);
+            tvExpectedAmount = itemView.findViewById(R.id.tvExpectedAmount);
+            tvVersedAmount   = itemView.findViewById(R.id.tvVersedAmount);
+            tvRest           = itemView.findViewById(R.id.tvRest);
+            tvStatus         = itemView.findViewById(R.id.tvStatus);
+            tvUploadStatus   = itemView.findViewById(R.id.tvUploadStatus);
         }
     }
 }

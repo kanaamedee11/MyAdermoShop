@@ -53,6 +53,6 @@
         app:itemIconTint="@color/ios_blue"
         app:itemTextColor="@color/ios_label"
         app:itemTextAppearance="@style/T.Body"
-        app:menu="@menu/nav_menu" />
+        app:menu="@menu/drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
