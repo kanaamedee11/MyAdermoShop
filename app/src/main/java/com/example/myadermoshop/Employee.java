@@ -138,4 +138,7 @@ public class Employee {
     public void setPictureUrl(String str) {
         this.pictureUrl = str;
     }
+
+    public void setEmployeePassword(String password) {
+    }
 }

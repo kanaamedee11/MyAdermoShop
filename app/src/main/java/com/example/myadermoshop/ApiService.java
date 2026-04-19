@@ -1,6 +1,8 @@
 package com.example.myadermoshop;
 
 import java.util.List;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -69,6 +71,16 @@ public interface ApiService {
     @GET("get_versements.php")
     Call<ServerResponse<List<Versement>>> getVersements(@Query(DatabaseHelper.COLUMN_API_KEY) String str);
 
+
     @POST("employee_login.php")
     Call<ServerResponse<Employee>> loginEmployee(@Body Employee employee);
+
+    @POST("change_password.php")
+    Call<ServerResponse<Void>> changePassword(@Body Map<String, String> body);
+
+    @POST("check_password_validity.php")
+    Call<ServerResponse<Employee>> checkPasswordValidity(@Body Map<String, String> body);
+
+    @GET("sync_all.php")
+    Call<SyncResponse> syncAll(@Query("apiKey") String apiKey);
 }

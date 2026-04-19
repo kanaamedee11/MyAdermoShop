@@ -12,7 +12,19 @@ import java.net.URL;
 public class ImageDownloadUtil {
     private static final String TAG = "ImageDownloadUtil";
 
+    public interface DownloadCallback {
+        void onSuccess(File file);
+        void onFailure(String imageUrl);
+    }
+
+    // Fire and forget - skips silently on failure
     public static void downloadImage(Context context, String imageUrl, String relativePath) {
+        downloadImage(context, imageUrl, relativePath, null);
+    }
+
+    // With optional callback
+    public static void downloadImage(Context context, String imageUrl,
+                                     String relativePath, DownloadCallback callback) {
         File file = new File(context.getFilesDir(), relativePath);
         if (file.getParentFile() != null && !file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
@@ -20,8 +32,11 @@ public class ImageDownloadUtil {
         new Thread(() -> {
             try {
                 downloadToFile(imageUrl, file);
+                Log.d(TAG, "Download succeeded: " + imageUrl);
+                if (callback != null) callback.onSuccess(file);
             } catch (IOException e) {
-                Log.e(TAG, "Error downloading image: " + imageUrl, e);
+                Log.w(TAG, "Skipping image, download failed: " + imageUrl);
+                if (callback != null) callback.onFailure(imageUrl);
             }
         }).start();
     }
@@ -33,8 +48,8 @@ public class ImageDownloadUtil {
         try {
             URL url = new URL(imageUrl);
             connection = (HttpURLConnection) url.openConnection();
-            // Fixing "unexpected end of stream" by disabling keep-alive
             connection.setRequestProperty("Connection", "close");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(15000);
             connection.setDoInput(true);
@@ -49,32 +64,19 @@ public class ImageDownloadUtil {
             outputStream = new FileOutputStream(destination);
             byte[] buffer = new byte[4096];
             int bytesRead;
-
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
             outputStream.flush();
-            Log.d(TAG, "Image downloaded successfully to " + destination.getAbsolutePath());
+            Log.d(TAG, "Image saved to: " + destination.getAbsolutePath());
 
         } catch (IOException e) {
-            if (destination.exists()) {
-                destination.delete(); // Delete partial file on failure
-            }
+            if (destination.exists()) destination.delete();
             throw e;
         } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException ignored) {}
-            }
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException ignored) {}
-            }
-            if (connection != null) {
-                connection.disconnect();
-            }
+            try { if (outputStream != null) outputStream.close(); } catch (IOException ignored) {}
+            try { if (inputStream != null) inputStream.close(); } catch (IOException ignored) {}
+            if (connection != null) connection.disconnect();
         }
     }
 
@@ -83,5 +85,13 @@ public class ImageDownloadUtil {
                                                    String folderPath) {
         String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         downloadImage(context, imageUrl, folderPath + "/" + fileName);
+    }
+
+    public static void downloadImageWithCustomPath(Context context,
+                                                   String imageUrl,
+                                                   String folderPath,
+                                                   DownloadCallback callback) {
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        downloadImage(context, imageUrl, folderPath + "/" + fileName, callback);
     }
 }
