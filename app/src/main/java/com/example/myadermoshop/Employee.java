@@ -1,144 +1,132 @@
 package com.example.myadermoshop;
 
-/* loaded from: classes.dex */
+import com.google.gson.annotations.SerializedName;
+
 public class Employee {
-    private String apiKey;
-    private String employeeAccountActivation;
-    private String employeeBirthday;
-    private String employeeCNI;
-    private String employeeEmail;
-    private String employeeFirstName;
+
+    @SerializedName("employeeID")
     private String employeeID;
+
+    @SerializedName("employeeFirstName")
+    private String employeeFirstName;
+
+    @SerializedName("employeeLastName")
     private String employeeLastName;
+
+    @SerializedName("employeeTel")
     private String employeeTel;
+
+    @SerializedName("employeeEmail")
+    private String employeeEmail;
+
+    // Sent to server on login; never stored locally or returned to UI
+    @SerializedName("password")
+    private String employeePassword;
+
+    @SerializedName("apiKey")
+    private String apiKey;
+
+    @SerializedName("fatherFullName")
     private String fatherFullName;
+
+    @SerializedName("motherFullname")   // matches PHP column name exactly
     private String motherFullName;
+
+    @SerializedName("employeeBirthday")
+    private String employeeBirthday;
+
+    @SerializedName("employeeAccountActivation")
+    private String employeeAccountActivation;
+
+    @SerializedName("employeeCNI")
+    private String employeeCNI;
+
+    @SerializedName("picture_name")
     private String pictureName;
+
+    @SerializedName("picture_url")
     private String pictureUrl;
 
-    public Employee(String str, String str2, String str3, String str4, String str5, String str6, String str7, String str8, String str9, String str10, String str11, String str12, String str13) {
-        this.employeeID = str;
-        this.employeeFirstName = str2;
-        this.employeeLastName = str3;
-        this.employeeTel = str4;
-        this.employeeEmail = str5;
-        this.fatherFullName = str7;
-        this.motherFullName = str8;
-        this.employeeBirthday = str9;
-        this.employeeAccountActivation = str10;
-        this.employeeCNI = str11;
-        this.apiKey = str6;
-        this.pictureName = str12;
-        this.pictureUrl = str13;
+    // -------------------------------------------------------------------------
+    // Constructors
+    // -------------------------------------------------------------------------
+
+    public Employee() {}
+
+    /**
+     * Full constructor — argument order matches the original decompiled class.
+     * str6 = apiKey (original had it in position 6, not password)
+     */
+    public Employee(String employeeID, String employeeFirstName, String employeeLastName,
+                    String employeeTel, String employeeEmail, String apiKey,
+                    String fatherFullName, String motherFullName, String employeeBirthday,
+                    String employeeAccountActivation, String employeeCNI,
+                    String pictureName, String pictureUrl) {
+        this.employeeID = employeeID;
+        this.employeeFirstName = employeeFirstName;
+        this.employeeLastName = employeeLastName;
+        this.employeeTel = employeeTel;
+        this.employeeEmail = employeeEmail;
+        this.apiKey = apiKey;
+        this.fatherFullName = fatherFullName;
+        this.motherFullName = motherFullName;
+        this.employeeBirthday = employeeBirthday;
+        this.employeeAccountActivation = employeeAccountActivation;
+        this.employeeCNI = employeeCNI;
+        this.pictureName = pictureName;
+        this.pictureUrl = pictureUrl;
     }
 
-    public Employee() {
+    // -------------------------------------------------------------------------
+    // Getters & Setters
+    // -------------------------------------------------------------------------
+
+    public String getEmployeeID() { return employeeID; }
+    public void setEmployeeID(String employeeID) { this.employeeID = employeeID; }
+
+    public String getEmployeeFirstName() { return employeeFirstName; }
+    public void setEmployeeFirstName(String employeeFirstName) { this.employeeFirstName = employeeFirstName; }
+
+    public String getEmployeeLastName() { return employeeLastName; }
+    public void setEmployeeLastName(String employeeLastName) { this.employeeLastName = employeeLastName; }
+
+    public String getEmployeeTel() { return employeeTel; }
+    public void setEmployeeTel(String employeeTel) { this.employeeTel = employeeTel; }
+
+    public String getEmployeeEmail() { return employeeEmail; }
+    public void setEmployeeEmail(String employeeEmail) { this.employeeEmail = employeeEmail; }
+
+    /**
+     * Used only when building the login request body.
+     * The server reads this as "password" (see employee_login.php).
+     * Never read back from a server response — the login response omits it.
+     */
+    public String getEmployeePassword() { return employeePassword; }
+    public void setEmployeePassword(String employeePassword) { this.employeePassword = employeePassword; }
+
+    public String getApiKey() { return apiKey; }
+    public void setApiKey(String apiKey) { this.apiKey = apiKey; }
+
+    public String getFatherFullName() { return fatherFullName; }
+    public void setFatherFullName(String fatherFullName) { this.fatherFullName = fatherFullName; }
+
+    public String getMotherFullName() { return motherFullName; }
+    public void setMotherFullName(String motherFullName) { this.motherFullName = motherFullName; }
+
+    public String getEmployeeBirthday() { return employeeBirthday; }
+    public void setEmployeeBirthday(String employeeBirthday) { this.employeeBirthday = employeeBirthday; }
+
+    public String getEmployeeAccountActivation() { return employeeAccountActivation; }
+    public void setEmployeeAccountActivation(String employeeAccountActivation) {
+        this.employeeAccountActivation = employeeAccountActivation;
     }
 
-    public String getEmployeeID() {
-        return this.employeeID;
-    }
+    public String getEmployeeCNI() { return employeeCNI; }
+    public void setEmployeeCNI(String employeeCNI) { this.employeeCNI = employeeCNI; }
 
-    public void setEmployeeID(String str) {
-        this.employeeID = str;
-    }
+    public String getPictureName() { return pictureName; }
+    public void setPictureName(String pictureName) { this.pictureName = pictureName; }
 
-    public String getEmployeeFirstName() {
-        return this.employeeFirstName;
-    }
-
-    public void setEmployeeFirstName(String str) {
-        this.employeeFirstName = str;
-    }
-
-    public String getEmployeeLastName() {
-        return this.employeeLastName;
-    }
-
-    public void setEmployeeLastName(String str) {
-        this.employeeLastName = str;
-    }
-
-    public String getEmployeeTel() {
-        return this.employeeTel;
-    }
-
-    public void setEmployeeTel(String str) {
-        this.employeeTel = str;
-    }
-
-    public String getEmployeeEmail() {
-        return this.employeeEmail;
-    }
-
-    public void setEmployeeEmail(String str) {
-        this.employeeEmail = str;
-    }
-
-    public String getFatherFullName() {
-        return this.fatherFullName;
-    }
-
-    public void setFatherFullName(String str) {
-        this.fatherFullName = str;
-    }
-
-    public String getMotherFullName() {
-        return this.motherFullName;
-    }
-
-    public void setMotherFullName(String str) {
-        this.motherFullName = str;
-    }
-
-    public String getEmployeeBirthday() {
-        return this.employeeBirthday;
-    }
-
-    public void setEmployeeBirthday(String str) {
-        this.employeeBirthday = str;
-    }
-
-    public String getEmployeeAccountActivation() {
-        return this.employeeAccountActivation;
-    }
-
-    public void setEmployeeAccountActivation(String str) {
-        this.employeeAccountActivation = str;
-    }
-
-    public String getEmployeeCNI() {
-        return this.employeeCNI;
-    }
-
-    public void setEmployeeCNI(String str) {
-        this.employeeCNI = str;
-    }
-
-    public String getApiKey() {
-        return this.apiKey;
-    }
-
-    public void setApiKey(String str) {
-        this.apiKey = str;
-    }
-
-    public String getPictureName() {
-        return this.pictureName;
-    }
-
-    public void setPictureName(String str) {
-        this.pictureName = str;
-    }
-
-    public String getPictureUrl() {
-        return this.pictureUrl;
-    }
-
-    public void setPictureUrl(String str) {
-        this.pictureUrl = str;
-    }
-
-    public void setEmployeePassword(String password) {
-    }
+    public String getPictureUrl() { return pictureUrl; }
+    public void setPictureUrl(String pictureUrl) { this.pictureUrl = pictureUrl; }
 }

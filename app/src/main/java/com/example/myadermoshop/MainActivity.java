@@ -155,21 +155,32 @@ public class MainActivity extends AppCompatActivity
 
     public void authenticateUserForClosing(ClosingSummary closingSummary) {
         KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        Intent intent = km.createConfirmDeviceCredentialIntent(
-                "Authentication Required",
-                "Please confirm your screen lock pattern, PIN, or password to continue.");
+        Intent intent = null;
+        if (km != null) {
+            intent = km.createConfirmDeviceCredentialIntent(
+                    "Authentication Required",
+                    "Please confirm your screen lock pattern, PIN, or password to continue.");
+        }
+
         if (intent != null) {
             closingSummaryToUpload = closingSummary;
             startActivityForResult(intent, REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS);
         } else {
-            Log.e(TAG, "No lock screen security setup found.");
+            Log.d(TAG, "No lock screen security setup found. Proceeding with upload.");
+            startUpload(closingSummary);
         }
+    }
+
+    private void startUpload(ClosingSummary closingSummary) {
+        ProgressFragment.newInstance(
+                        closingSummary.getDate(),
+                        closingSummary)
+                .show(getSupportFragmentManager(), "progressFragment");
     }
 
     public void resendClosing(ClosingSummary closingSummary) {
         Log.d(TAG, "Resending closure data for date: " + closingSummary.getDate());
-        ProgressFragment.newInstance(closingSummary.getDate(), closingSummary)
-                .show(getSupportFragmentManager(), "progressFragment");
+        startUpload(closingSummary);
     }
 
     @Override
@@ -179,10 +190,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "Authentication successful. Starting data upload...");
                 if (closingSummaryToUpload != null) {
-                    ProgressFragment.newInstance(
-                                    closingSummaryToUpload.getDate(),
-                                    closingSummaryToUpload)
-                            .show(getSupportFragmentManager(), "progressFragment");
+                    startUpload(closingSummaryToUpload);
                 }
             } else {
                 Log.e(TAG, "Authentication failed.");

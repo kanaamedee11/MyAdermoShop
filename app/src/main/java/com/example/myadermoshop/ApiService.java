@@ -71,9 +71,8 @@ public interface ApiService {
     @GET("get_versements.php")
     Call<ServerResponse<List<Versement>>> getVersements(@Query(DatabaseHelper.COLUMN_API_KEY) String str);
 
-
     @POST("employee_login.php")
-    Call<ServerResponse<Employee>> loginEmployee(@Body Employee employee);
+    Call<LoginResponse> loginEmployee(@Body LoginRequest request);
 
     @POST("change_password.php")
     Call<ServerResponse<Void>> changePassword(@Body Map<String, String> body);

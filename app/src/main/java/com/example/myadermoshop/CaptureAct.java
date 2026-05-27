@@ -1,4 +1,6 @@
 package com.example.myadermoshop;
 
-public class CaptureAct {
+import com.journeyapps.barcodescanner.CaptureActivity;
+
+public class CaptureAct extends CaptureActivity {
 }

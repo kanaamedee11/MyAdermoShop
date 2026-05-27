@@ -4,16 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,110 +36,55 @@ public class LoginActivity extends AppCompatActivity {
             String password = passwordEditText.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-                showAlert("Please enter email and password");
-            } else {
-                loginButton.setEnabled(false);
-                try {
-                    loginUser(email, password);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    loginButton.setEnabled(true);
+                showToast("Please enter email and password");
+                return;
+            }
+
+            // Disable immediately to prevent double-tap
+            loginButton.setEnabled(false);
+            loginUser(email, password);
+        });
+    }
+
+    private void loginUser(String email, String password) {
+        // Uses Retrofit (single shared OkHttp connection pool) — no Volley,
+        // no per-call queue creation, no burst of parallel TLS handshakes.
+        databaseHelper.loginEmployee(email, password, new DatabaseHelper.LoginCallback() {
+
+            @Override
+            public void onSuccess(Employee employee) {
+                // Persist credentials for the rest of the app
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("employeeID",               employee.getEmployeeID());
+                editor.putString(DatabaseHelper.COLUMN_API_KEY, employee.getApiKey());
+                editor.apply();
+
+                Log.d(TAG, "Login successful. Employee ID: " + employee.getEmployeeID());
+
+                // Download profile picture in background (non-blocking)
+                String pictureUrl = employee.getPictureUrl();
+                if (pictureUrl != null && !pictureUrl.isEmpty()) {
+                    ImageDownloadUtil.downloadImageWithCustomPath(
+                            LoginActivity.this, pictureUrl, "employee_pictures");
                 }
+
+                // Go to splash / main screen
+                startActivity(new Intent(LoginActivity.this, SplashActivity.class));
+                finish();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Log.e(TAG, "Login failed: " + msg);
+                runOnUiThread(() -> {
+                    showToast(msg != null ? msg : "Login failed. Please try again.");
+                    loginButton.setEnabled(true);
+                });
             }
         });
     }
 
-    private void loginUser(String email, String password) throws JSONException {
-        JSONObject loginParams = new JSONObject();
-        loginParams.put("email", email);
-        loginParams.put("password", password);
-
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST,
-                "https://adermoburundi.xyz/api/employee_login.php",
-                loginParams,
-                response -> {
-                    try {
-                        if (!response.getBoolean("success")) {
-                            showAlert(response.getString("message"));
-                            loginButton.setEnabled(true);
-                            return;
-                        }
-
-                        JSONObject employeeJson = response.getJSONObject("employee");
-                        String employeeID = employeeJson.getString("employeeID");
-                        String apiKey     = employeeJson.getString(
-                                DatabaseHelper.COLUMN_API_KEY);
-
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("employeeID", employeeID);
-                        editor.putString(DatabaseHelper.COLUMN_API_KEY, apiKey);
-                        editor.apply();
-
-                        Log.d(TAG, "Login successful. Employee ID: " + employeeID);
-
-                        Employee employee = new Employee(
-                                employeeID,
-                                employeeJson.getString(
-                                        DatabaseHelper.COLUMN_EMPLOYEE_FIRST_NAME),
-                                employeeJson.getString(
-                                        DatabaseHelper.COLUMN_EMPLOYEE_LAST_NAME),
-                                employeeJson.getString(
-                                        DatabaseHelper.COLUMN_EMPLOYEE_TEL),
-                                employeeJson.getString(
-                                        DatabaseHelper.COLUMN_EMPLOYEE_EMAIL),
-                                apiKey,
-                                safeGetString(employeeJson,
-                                        DatabaseHelper.COLUMN_FATHER_FULL_NAME, ""),
-                                safeGetString(employeeJson, "motherFullname", ""),
-                                safeGetString(employeeJson,
-                                        DatabaseHelper.COLUMN_EMPLOYEE_BIRTHDAY, ""),
-                                safeGetString(employeeJson,
-                                        DatabaseHelper.COLUMN_EMPLOYEE_ACCOUNT_ACTIVATION, ""),
-                                safeGetString(employeeJson,
-                                        DatabaseHelper.COLUMN_EMPLOYEE_CNI, ""),
-                                safeGetString(employeeJson,
-                                        DatabaseHelper.COLUMN_PICTURE_NAME, ""),
-                                safeGetString(employeeJson,
-                                        DatabaseHelper.COLUMN_PICTURE_URL, "")
-                        );
-
-                        databaseHelper.addEmployee(employee);
-
-                        String pictureUrl = safeGetString(employeeJson,
-                                DatabaseHelper.COLUMN_PICTURE_URL, "");
-                        if (!pictureUrl.isEmpty()) {
-                            ImageDownloadUtil.downloadImageWithCustomPath(
-                                    LoginActivity.this, pictureUrl, "employee_pictures");
-                        }
-
-                        startActivity(new Intent(LoginActivity.this, SplashActivity.class));
-                        finish();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        showAlert("An error occurred during response processing");
-                        loginButton.setEnabled(true);
-                    }
-                },
-                error -> {
-                    error.printStackTrace();
-                    showAlert("Server error: " + error.getMessage());
-                    loginButton.setEnabled(true);
-                });
-
-        Volley.newRequestQueue(this).add(request);
-    }
-
-    private String safeGetString(JSONObject json, String key, String defaultValue) {
-        try {
-            return json.isNull(key) ? defaultValue : json.getString(key);
-        } catch (JSONException e) {
-            return defaultValue;
-        }
-    }
-
-    private void showAlert(String message) {
+    private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

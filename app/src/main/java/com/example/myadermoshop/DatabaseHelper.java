@@ -465,34 +465,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // employee_login.php, change_password.php, check_password_validity.php
     // =========================================================================
 
-    /** POST employee_login.php — body: { email, password } */
     public void loginEmployee(String email, String password, final LoginCallback callback) {
-        Employee req = new Employee();
-        req.setEmployeeEmail(email);
-        req.setEmployeePassword(password);
-        RetrofitInstance.getApiService().loginEmployee(req)
-                .enqueue(new Callback<ServerResponse<Employee>>() {
+        // LoginRequest serializes to exactly {"email":"...","password":"..."}
+        // No extra fields — matches what employee_login.php reads.
+        RetrofitInstance.getApiService()
+                .loginEmployee(new LoginRequest(email, password))
+                .enqueue(new Callback<LoginResponse>() {
                     @Override
-                    public void onResponse(Call<ServerResponse<Employee>> call,
-                                           Response<ServerResponse<Employee>> response) {
+                    public void onResponse(Call<LoginResponse> call,
+                                           Response<LoginResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            ServerResponse<Employee> body = response.body();
-                            if (body.isSuccess() && body.getData() != null) {
-                                addEmployee(body.getData());
-                                callback.onSuccess(body.getData());
+                            LoginResponse body = response.body();
+                            if (body.isSuccess() && body.getEmployee() != null) {
+                                // Save to local SQLite
+                                addEmployee(body.getEmployee());
+                                callback.onSuccess(body.getEmployee());
                             } else {
-                                callback.onFailure(body.getMessage() != null ? body.getMessage() : "Login failed.");
+                                callback.onFailure(body.getMessage() != null
+                                        ? body.getMessage() : "Login failed.");
                             }
                         } else {
                             callback.onFailure("HTTP " + response.code());
                         }
                     }
-                    @Override public void onFailure(Call<ServerResponse<Employee>> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
                         callback.onFailure("Network error: " + t.getMessage());
                     }
                 });
     }
-
     /** POST change_password.php — body: { apiKey, employeeID, existingPassword, newPassword } */
     public void changePassword(String employeeID, String existingPassword,
                                String newPassword, final PasswordCallback callback) {

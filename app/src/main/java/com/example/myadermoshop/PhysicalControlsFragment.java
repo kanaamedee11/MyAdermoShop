@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class PhysicalControlsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FloatingActionButton fabAddPhysicalControl =
+        ExtendedFloatingActionButton fabAddPhysicalControl =
                 view.findViewById(R.id.fabAddPhysicalControl);
         RecyclerView recyclerView =
                 view.findViewById(R.id.recyclerViewPhysicalControls);
@@ -76,7 +76,7 @@ public class PhysicalControlsFragment extends Fragment {
                         public void onFailure(String error) {
                             loadPhysicalControlsFromLocal();
                             if (swipeRefreshLayout != null)
-                                swipeRefreshLayout.setRefreshing(false);
+                                    swipeRefreshLayout.setRefreshing(false);
                         }
                     });
         } else {
